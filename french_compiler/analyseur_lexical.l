@@ -17,6 +17,7 @@ extern YYSTYPE yylval;
 "reel"          { printf("[LEX] Token: REEL\n"); return REEL; }
 "chaine"        { printf("[LEX] Token: CHAINE\n"); return CHAINE; }
 "booleen"       { printf("[LEX] Token: BOOLEEN\n"); return BOOLEEN; }
+"tableau"       { printf("[LEX] Token: TABLEAU\n"); return TABLEAU; }
 
  /* Instructions d'E/S */
 "lire"          { printf("[LEX] Token: LIRE\n"); return LIRE; }
@@ -77,6 +78,8 @@ extern YYSTYPE yylval;
 ")"             { printf("[LEX] Token: PAREN_FERM\n"); return PAREN_FERM; }
 "{"             { printf("[LEX] Token: ACCOLADE_OUV\n"); return ACCOLADE_OUV; }
 "}"             { printf("[LEX] Token: ACCOLADE_FERM\n"); return ACCOLADE_FERM; }
+"["             { printf("[LEX] Token: CROCHET_OUV\n"); return CROCHET_OUV; }
+"]"             { printf("[LEX] Token: CROCHET_FERM\n"); return CROCHET_FERM; }
 ";"             { printf("[LEX] Token: POINT_VIRGULE\n"); return POINT_VIRGULE; }
 ","             { printf("[LEX] Token: VIRGULE\n"); return VIRGULE; }
 

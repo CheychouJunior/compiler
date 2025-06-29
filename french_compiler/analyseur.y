@@ -10,7 +10,9 @@ extern int yylineno;
 // Code generation globals
 typedef struct {
     char name[50];
-    char type[20];  // "entier", "reel", "chaine"
+    char type[20];  // "entier", "reel", "chaine", "tableau_entier", "tableau_reel", "tableau_chaine"
+    int array_size; // Size for arrays, 0 for non-arrays
+    char element_type[20]; // Type of array elements
 } variable_info;
 
 typedef struct {
@@ -53,6 +55,18 @@ void add_variable(const char *name, const char *type) {
     if (var_count < 100) {
         strcpy(variables[var_count].name, name);
         strcpy(variables[var_count].type, type);
+        variables[var_count].array_size = 0;
+        variables[var_count].element_type[0] = '\0';
+        var_count++;
+    }
+}
+
+void add_array_variable(const char *name, const char *element_type, int size) {
+    if (var_count < 100) {
+        strcpy(variables[var_count].name, name);
+        snprintf(variables[var_count].type, sizeof(variables[var_count].type), "tableau_%s", element_type);
+        strcpy(variables[var_count].element_type, element_type);
+        variables[var_count].array_size = size;
         var_count++;
     }
 }
@@ -75,6 +89,30 @@ const char* get_variable_type(const char *name) {
     return "unknown";
 }
 
+int is_array_variable(const char *name) {
+    int var_index = find_variable(name);
+    if (var_index != -1) {
+        return variables[var_index].array_size > 0;
+    }
+    return 0;
+}
+
+const char* get_array_element_type(const char *name) {
+    int var_index = find_variable(name);
+    if (var_index != -1 && variables[var_index].array_size > 0) {
+        return variables[var_index].element_type;
+    }
+    return "unknown";
+}
+
+int get_array_size(const char *name) {
+    int var_index = find_variable(name);
+    if (var_index != -1) {
+        return variables[var_index].array_size;
+    }
+    return 0;
+}
+
 void add_string_literal(const char *content, int label) {
     if (string_count < 100) {
         strcpy(string_literals[string_count].content, content);
@@ -89,17 +127,31 @@ void write_assembly_header() {
     fprintf(output_file, "    digit_buffer db 16 dup(0)\n");
     fprintf(output_file, "    for_end_value dd 0\n");
     fprintf(output_file, "    input_buffer times 16 db 0\n");  
+    fprintf(output_file, "    array_index_temp dd 0\n");
+    fprintf(output_file, "    array_bounds_msg db 'Array index out of bounds', 10, 0\n");
 }
 
 void write_variables_and_code() {
     // Write all variables first
     for (int i = 0; i < var_count; i++) {
-        if (strcmp(variables[i].type, "entier") == 0) {
-            fprintf(output_file, "    %s dd 0\n", variables[i].name);
-        } else if (strcmp(variables[i].type, "reel") == 0) {
-            fprintf(output_file, "    %s dd 0\n", variables[i].name);  // 32-bit float
-        } else if (strcmp(variables[i].type, "chaine") == 0) {
-            fprintf(output_file, "    %s times 256 db 0\n", variables[i].name);  // 256-byte string buffer
+        if (variables[i].array_size > 0) {
+            // Array variable
+            if (strcmp(variables[i].element_type, "entier") == 0) {
+                fprintf(output_file, "    %s times %d dd 0\n", variables[i].name, variables[i].array_size);
+            } else if (strcmp(variables[i].element_type, "reel") == 0) {
+                fprintf(output_file, "    %s times %d dd 0\n", variables[i].name, variables[i].array_size);
+            } else if (strcmp(variables[i].element_type, "chaine") == 0) {
+                fprintf(output_file, "    %s times %d times 256 db 0\n", variables[i].name, variables[i].array_size);
+            }
+        } else {
+            // Regular variable
+            if (strcmp(variables[i].type, "entier") == 0) {
+                fprintf(output_file, "    %s dd 0\n", variables[i].name);
+            } else if (strcmp(variables[i].type, "reel") == 0) {
+                fprintf(output_file, "    %s dd 0\n", variables[i].name);
+            } else if (strcmp(variables[i].type, "chaine") == 0) {
+                fprintf(output_file, "    %s times 256 db 0\n", variables[i].name);
+            }
         }
     }
     
@@ -133,6 +185,40 @@ void write_variables_and_code() {
         fclose(temp_code_file);
         remove("temp_code.asm");
     }
+}
+
+/* Array bounds checking function */
+void write_array_bounds_check() {
+    fprintf(output_file, "check_array_bounds:\n");
+    fprintf(output_file, "    ; Parameters: eax = index, ebx = array_size\n");
+    fprintf(output_file, "    push ecx\n");
+    fprintf(output_file, "    push edx\n");
+    fprintf(output_file, "    \n");
+    fprintf(output_file, "    ; Check if index < 0\n");
+    fprintf(output_file, "    cmp eax, 0\n");
+    fprintf(output_file, "    jl .bounds_error\n");
+    fprintf(output_file, "    \n");
+    fprintf(output_file, "    ; Check if index >= size\n");
+    fprintf(output_file, "    cmp eax, ebx\n");
+    fprintf(output_file, "    jge .bounds_error\n");
+    fprintf(output_file, "    \n");
+    fprintf(output_file, "    ; Index is valid\n");
+    fprintf(output_file, "    pop edx\n");
+    fprintf(output_file, "    pop ecx\n");
+    fprintf(output_file, "    ret\n");
+    fprintf(output_file, "    \n");
+    fprintf(output_file, ".bounds_error:\n");
+    fprintf(output_file, "    ; Print error message\n");
+    fprintf(output_file, "    mov eax, 4\n");
+    fprintf(output_file, "    mov ebx, 1\n");
+    fprintf(output_file, "    mov ecx, array_bounds_msg\n");
+    fprintf(output_file, "    mov edx, 26\n");
+    fprintf(output_file, "    int 0x80\n");
+    fprintf(output_file, "    \n");
+    fprintf(output_file, "    ; Exit program\n");
+    fprintf(output_file, "    mov eax, 1\n");
+    fprintf(output_file, "    mov ebx, 1\n");
+    fprintf(output_file, "    int 0x80\n");
 }
 
 /* INTEGER FUNCTIONS */
@@ -393,6 +479,9 @@ void write_runtime_functions() {
 
     fprintf(output_file, "\n; Runtime support functions\n");
     
+    /* ARRAY BOUNDS CHECK */
+    write_array_bounds_check();
+
     /* INTEGER FUNCTIONS */
     write_read_integer();
     write_print_integer();
@@ -437,7 +526,7 @@ int find_function(const char *name) {
 %token <reel> NOMBRE_REEL
 %token <chaine> IDENTIFICATEUR CHAINE_LITT
 
-%token ENTIER REEL CHAINE BOOLEEN
+%token ENTIER REEL CHAINE BOOLEEN TABLEAU
 %token LIRE ECRIRE AFFICHER
 %token SI ALORS SINON FINSI
 %token TANTQUE FAIRE FINTANTQUE
@@ -449,6 +538,7 @@ int find_function(const char *name) {
 %token EGAL DIFFERENT INFEGAL SUPEGAL INFERIEUR SUPERIEUR
 %token AFFECTATION PLUS MOINS FOIS DIVISE MODULO
 %token PAREN_OUV PAREN_FERM ACCOLADE_OUV ACCOLADE_FERM
+%token CROCHET_OUV CROCHET_FERM
 %token POINT_VIRGULE VIRGULE
 
 %type <entier> expression
@@ -513,6 +603,32 @@ declaration:
         free($1);
         free($2);
     }
+    | TABLEAU CROCHET_OUV NOMBRE_ENTIER CROCHET_FERM type IDENTIFICATEUR {
+        printf("Déclaration de tableau %s[%d] de type %s\n", $6, $3, $5);
+        add_array_variable($6, $5, $3);
+        free($5);
+        free($6);
+    }
+    | TABLEAU CROCHET_OUV NOMBRE_ENTIER CROCHET_FERM type IDENTIFICATEUR AFFECTATION ACCOLADE_OUV liste_valeurs_tableau ACCOLADE_FERM {
+    printf("Déclaration de tableau %s[%d] avec initialisation\n", $6, $3);
+    add_array_variable($6, $5, $3);
+    
+    fprintf(temp_code_file, "    ; Array %s initialization\n", $6);
+    // The values are already on the stack from liste_valeurs_tableau
+    // Pop them and store in reverse order
+    for (int idx = $3 - 1; idx >= 0; idx--) {
+        fprintf(temp_code_file, "    pop eax\n");
+        fprintf(temp_code_file, "    mov [%s + %d], eax\n", $6, idx * 4);
+    }
+    
+    free($5);
+    free($6);
+    }
+    ;
+    
+liste_valeurs_tableau:
+    expression
+    | liste_valeurs_tableau VIRGULE expression
     ;
 
 type:
@@ -547,6 +663,35 @@ affectation:
         fprintf(temp_code_file, "    mov [%s], eax\n", $1);
         
         free($1);
+    }
+    | IDENTIFICATEUR CROCHET_OUV expression CROCHET_FERM AFFECTATION expression {
+        printf("Affectation à l'élément de tableau: %s[%d] = %d\n", $1, $3, $6);
+        
+        if (find_variable($1) == -1) {
+            fprintf(stderr, "Erreur: Tableau '%s' non déclaré à la ligne %d\n", $1, yylineno);
+        } else if (!is_array_variable($1)) {
+            fprintf(stderr, "Erreur: '%s' n'est pas un tableau à la ligne %d\n", $1, yylineno);
+        } else {
+            fprintf(temp_code_file, "    ; Array assignment %s[index] = value\n", $1);
+            fprintf(temp_code_file, "    pop eax          ; value\n");
+            fprintf(temp_code_file, "    pop ebx          ; index\n");
+            fprintf(temp_code_file, "    \n");
+            fprintf(temp_code_file, "    ; Bounds check\n");
+            fprintf(temp_code_file, "    push eax         ; save value\n");
+            fprintf(temp_code_file, "    push ebx         ; save index\n");
+            fprintf(temp_code_file, "    mov eax, ebx     ; index for bounds check\n");
+            fprintf(temp_code_file, "    mov ebx, %d      ; array size\n", get_array_size($1));
+            fprintf(temp_code_file, "    call check_array_bounds\n");
+            fprintf(temp_code_file, "    pop ebx          ; restore index\n");
+            fprintf(temp_code_file, "    pop eax          ; restore value\n");
+            fprintf(temp_code_file, "    \n");
+            fprintf(temp_code_file, "    ; Calculate address and store\n");
+            fprintf(temp_code_file, "    mov edx, ebx     ; index\n");
+            fprintf(temp_code_file, "    shl edx, 2       ; index * 4 (for 32-bit integers)\n");
+            fprintf(temp_code_file, "    mov [%s + edx], eax ; store value at base + offset\n", $1);
+            
+            free($1);
+        }
     }
     ;
 
@@ -644,6 +789,7 @@ instruction_ecrire:
 	ecrire_variable
     | ecrire_string_literal
     | ecrire_expression
+    | ecrire_array_element
     ;
     
 ecrire_variable:
@@ -673,6 +819,53 @@ ecrire_variable:
         free($3);
     }
     ;
+
+ecrire_array_element:
+    ECRIRE PAREN_OUV IDENTIFICATEUR CROCHET_OUV expression CROCHET_FERM PAREN_FERM {
+        printf("Ecriture d'élément de tableau: %s[%d]\n", $3, $5);
+        
+        if (find_variable($3) == -1) {
+            fprintf(stderr, "Erreur: Tableau '%s' non déclaré à la ligne %d\n", $3, yylineno);
+            free($3);
+        } else if (!is_array_variable($3)) {
+            fprintf(stderr, "Erreur: '%s' n'est pas un tableau à la ligne %d\n", $3, yylineno);
+            free($3);
+        } else {
+            const char *element_type = get_array_element_type($3);
+    
+            fprintf(temp_code_file, "    ; Write array element %s[index]\n", $3);
+            fprintf(temp_code_file, "    pop eax          ; index\n");
+            fprintf(temp_code_file, "    \n");
+            fprintf(temp_code_file, "    ; Bounds check\n");
+            fprintf(temp_code_file, "    push eax         ; save index\n");
+            fprintf(temp_code_file, "    mov ebx, %d      ; array size\n", get_array_size($3));
+            fprintf(temp_code_file, "    call check_array_bounds\n");
+            fprintf(temp_code_file, "    pop eax          ; restore index\n");
+            fprintf(temp_code_file, "    \n");
+            fprintf(temp_code_file, "    ; Calculate address and load value\n");
+            fprintf(temp_code_file, "    mov edx, eax     ; index\n");
+            fprintf(temp_code_file, "    shl edx, 2       ; index * 4\n");
+            
+            if (strcmp(element_type, "entier") == 0) {
+                fprintf(temp_code_file, "    push dword [%s + edx]\n", $3);
+                fprintf(temp_code_file, "    call print_integer\n");
+                fprintf(temp_code_file, "    add esp, 4\n");
+            } else if (strcmp(element_type, "reel") == 0) {
+                fprintf(temp_code_file, "    push dword [%s + edx]\n", $3);
+                fprintf(temp_code_file, "    call print_real\n");
+                fprintf(temp_code_file, "    add esp, 4\n");
+            } else if (strcmp(element_type, "chaine") == 0) {
+                fprintf(temp_code_file, "    lea eax, [%s + edx]\n", $3);
+                fprintf(temp_code_file, "    push eax\n");
+                fprintf(temp_code_file, "    call print_string\n");
+                fprintf(temp_code_file, "    add esp, 4\n");
+            }
+            
+            free($3);
+        }
+    }
+    ;
+
 
 ecrire_string_literal:
     ECRIRE PAREN_OUV CHAINE_LITT PAREN_FERM {
@@ -728,6 +921,52 @@ instruction_lire:
         }
         
         free($3);
+    }
+    | LIRE PAREN_OUV IDENTIFICATEUR CROCHET_OUV expression CROCHET_FERM PAREN_FERM {
+        printf("Instruction de lecture pour élément de tableau: %s[%d]\n", $3, $5);
+        
+        if (find_variable($3) == -1) {
+            fprintf(stderr, "Erreur: Tableau '%s' non déclaré à la ligne %d\n", $3, yylineno);
+            free($3);
+        } else if (!is_array_variable($3)) {
+            fprintf(stderr, "Erreur: '%s' n'est pas un tableau à la ligne %d\n", $3, yylineno);
+            free($3);
+        } else {
+           const char *element_type = get_array_element_type($3);
+    
+            fprintf(temp_code_file, "    ; Read into array element %s[index]\n", $3);
+            fprintf(temp_code_file, "    pop eax          ; index\n");
+            fprintf(temp_code_file, "    \n");
+            fprintf(temp_code_file, "    ; Bounds check\n");
+            fprintf(temp_code_file, "    push eax         ; save index\n");
+            fprintf(temp_code_file, "    mov ebx, %d      ; array size\n", get_array_size($3));
+            fprintf(temp_code_file, "    call check_array_bounds\n");
+            fprintf(temp_code_file, "    pop eax          ; restore index\n");
+            fprintf(temp_code_file, "    mov [array_index_temp], eax  ; save index\n");
+            fprintf(temp_code_file, "    \n");
+            
+            if (strcmp(element_type, "entier") == 0) {
+                fprintf(temp_code_file, "    call read_integer\n");
+                fprintf(temp_code_file, "    mov ebx, [array_index_temp]  ; restore index\n");
+                fprintf(temp_code_file, "    shl ebx, 2       ; index * 4\n");
+                fprintf(temp_code_file, "    mov [%s + ebx], eax   ; store value\n", $3);
+            } else if (strcmp(element_type, "reel") == 0) {
+                fprintf(temp_code_file, "    call read_real\n");
+                fprintf(temp_code_file, "    mov ebx, [array_index_temp]  ; restore index\n");
+                fprintf(temp_code_file, "    shl ebx, 2       ; index * 4\n");
+                fprintf(temp_code_file, "    mov [%s + ebx], eax   ; store value\n", $3);
+            } else if (strcmp(element_type, "chaine") == 0) {
+                fprintf(temp_code_file, "    mov ebx, [array_index_temp]  ; restore index\n");
+                fprintf(temp_code_file, "    mov eax, 256     ; string size\n");
+                fprintf(temp_code_file, "    mul ebx          ; index * 256\n");
+                fprintf(temp_code_file, "    lea ecx, [%s + eax] ; calculate string address\n", $3);
+                fprintf(temp_code_file, "    push ecx\n");
+                fprintf(temp_code_file, "    call read_string\n");
+                fprintf(temp_code_file, "    add esp, 4\n");
+            }
+            
+            free($3);
+        }
     }
     ;
 
@@ -1129,6 +1368,37 @@ expression:
         $$ = 0;
         free($1);
     }
+    | IDENTIFICATEUR CROCHET_OUV expression CROCHET_FERM {
+    printf("Accès à l'élément de tableau: %s[index]\n", $1);
+    
+    if (find_variable($1) == -1) {
+        fprintf(stderr, "Erreur: Tableau '%s' non déclaré à la ligne %d\n", $1, yylineno);
+        $$ = 0;
+        free($1);
+    } else if (!is_array_variable($1)) {
+        fprintf(stderr, "Erreur: '%s' n'est pas un tableau à la ligne %d\n", $1, yylineno);
+        $$ = 0;
+        free($1);
+    } else {
+        fprintf(temp_code_file, "    ; Array access %s[index]\n", $1);
+        fprintf(temp_code_file, "    pop eax          ; index\n");
+        fprintf(temp_code_file, "    \n");
+        fprintf(temp_code_file, "    ; Bounds check\n");
+        fprintf(temp_code_file, "    push eax         ; save index\n");
+        fprintf(temp_code_file, "    mov ebx, %d      ; array size\n", get_array_size($1));
+        fprintf(temp_code_file, "    call check_array_bounds\n");
+        fprintf(temp_code_file, "    pop eax          ; restore index\n");
+        fprintf(temp_code_file, "    \n");
+        fprintf(temp_code_file, "    ; Calculate address and load value\n");
+        fprintf(temp_code_file, "    mov edx, eax     ; index\n");
+        fprintf(temp_code_file, "    shl edx, 2       ; index * 4\n");
+        fprintf(temp_code_file, "    mov eax, [%s + edx] ; load value\n", $1);
+        fprintf(temp_code_file, "    push eax         ; push value for expression\n");
+        
+        $$ = 0;
+        free($1);
+    }
+}
     ;
 
 appel_fonction:

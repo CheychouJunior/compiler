@@ -1,0 +1,54 @@
+// Example program demonstrating array usage in the enhanced French language compiler
+
+// Declare an array of 5 integers
+tableau[5] entier nombres;
+
+// Declare and initialize an array
+tableau[3] entier scores = {10, 20, 30};
+
+// Regular variables
+entier i;
+entier somme;
+
+// Initialize array elements
+nombres[0] = 1;
+nombres[1] = 2;
+nombres[2] = 3;
+nombres[3] = 4;
+nombres[4] = 5;
+
+// Initialize sum
+somme = 0;
+
+pour i de 0 a 2 faire
+    ecrire(scores[i]);
+finpour
+
+// Calculate sum using a for loop
+pour i de 0 a 4 faire
+    somme = somme + nombres[i];
+finpour
+
+// Display the result
+ecrire("La somme des éléments du tableau est: ");
+ecrire(somme);
+
+// Read values into array
+ecrire("Entrez 3 nouvelles valeurs:");
+pour i de 0 a 2 faire
+    ecrire("Valeur ");
+    ecrire(i);
+    ecrire(": ");
+    lire(scores[i]);
+finpour
+
+// Display the new values
+ecrire("Nouvelles valeurs:");
+pour i de 0 a 2 faire
+    ecrire("scores ");
+    ecrire(i);
+    ecrire(" = ");
+    ecrire(scores[i]);
+finpour
+
+retourner 0;
