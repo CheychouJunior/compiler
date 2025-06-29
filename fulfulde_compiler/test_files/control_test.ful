@@ -1,0 +1,15 @@
+// Test: control_test.ful
+limre i;
+limre somme;
+somme = 0;
+
+e_kala i iwde 1 haa 10 wayde
+    somme = somme + i;
+gasii_e
+winndude(somme);  // Expected output: 55
+
+so somme > 50 no
+    winndude("Grande somme");
+kono
+    winndude("Petite somme");
+gasii_so

@@ -1,0 +1,15 @@
+// Test: control_test.fr
+entier i;
+entier somme;
+somme = 0;
+
+pour i de 1 a 10 faire
+    somme = somme + i;
+finpour
+ecrire(somme);  // Expected output: 55
+
+si somme > 50 alors
+    ecrire("Grande somme");
+sinon
+    ecrire("Petite somme");
+finsi

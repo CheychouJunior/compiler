@@ -1,0 +1,10 @@
+// Test: basic_test.ful
+limre a;
+limre b;
+limre c;
+a = 10;
+b = 5;
+c = a + b * 2;
+
+winndude("Hello World");  // Expected output: Hello World
+winndude(c);  // Expected output: 20

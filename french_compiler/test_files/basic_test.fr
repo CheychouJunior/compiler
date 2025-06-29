@@ -1,0 +1,12 @@
+// Test: basic_test.fr
+entier aa;
+entier b;
+entier c;
+aa = 10;
+b = 5;
+c = aa + b * 2;
+
+ecrire("Hello World");  // Expected output: Hello World
+ecrire(c);  // Expected output: 20
+
+

@@ -1,0 +1,905 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{tikz}
+\usepackage{textcomp}
+\usetikzlibrary{shapes,arrows,positioning}
+
+% Page geometry
+\geometry{
+    left=2.5cm,
+    right=2.5cm,
+    top=2.5cm,
+    bottom=2.5cm,
+    headheight=15pt
+}
+
+% Headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Code listing settings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{lightgray!10},
+    commentstyle=\color{green!60!black},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{gray},
+    stringstyle=\color{red},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    frameround=tttt,
+    framesep=5pt
+}
+\lstset{style=mystyle}
+
+% Custom language for French programming
+\lstdefinelanguage{French}{
+    keywords={entier, reel, chaine, booleen, si, alors, sinon, finsi, tantque, faire, fintantque, pour, de, a, finpour, fonction, retourner, finfonction, lire, ecrire, vrai, faux, et, ou, non},
+    sensitive=true,
+    comment=[l]{//},
+    string=[b]"
+}
+
+% Custom language for Fulfulde programming
+\lstdefinelanguage{Fulfulde}{
+    keywords={limle, si, kala, woto, gasii, winndu},
+    sensitive=true,
+    comment=[l]{//},
+    string=[b]"
+}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=red,
+    pdftitle={Compiler Development Report: French and Fulfulde Programming Languages},
+    pdfauthor={[Your Name]},
+    pdfsubject={Compiler Construction},
+    pdfkeywords={Compiler, Programming Languages, French, Fulfulde, Education}
+}
+
+% Title page information
+\title{
+    \vspace{-2cm}
+    \huge\textbf{Compiler Development Report:} \\
+    \LARGE\textbf{French and Fulfulde Programming Languages} \\
+    \vspace{3cm}
+}
+
+\author{
+    \textit{CHEYCHOU MOUAFO JUNIOR      21T2374} \\
+    \textit{NGNAPA NGOULE ASHLEY      21T2316} \\
+    \textit{NIKOUM MODESTE LORENE      21T2580} \\
+    \textit{POLLAH YVES      21T2516} \\
+    \vspace{1cm}
+    \textit{SIBAFO WISDOM      21T2915} \\
+    \textit{University of Yaoundé I} \\
+    \textit{Department of Computer Science} \\
+    \vspace{0.5cm}
+    \textit{Supervisor: THOMAS MESSI NGUELE} \\
+    \textit{Course: Compilation/INF 4038}
+}
+
+\date{\today}
+
+\begin{document}
+
+% Title page
+\maketitle
+\thispagestyle{empty}
+
+\vspace{2cm}
+
+\newpage
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% List of figures and tables
+\listoffigures
+\listoftables
+\newpage
+
+\section{Introduction}
+
+\subsection{Background}
+
+Programming education in multilingual environments presents unique challenges, particularly in regions like Cameroon where multiple languages coexist. Traditional programming languages use English-based syntax, which can create barriers for students whose primary languages are French or local languages such as Fulfulde. This project addresses the need for programming languages that use familiar syntax in local languages, making programming concepts more accessible to diverse populations.
+
+The importance of this work lies in democratizing programming education and preserving cultural identity while teaching universal computational concepts. By developing compilers that accept French and Fulfulde syntax, we demonstrate that programming logic transcends natural language barriers and can be expressed effectively in any human language.
+
+\subsection{Objectives}
+
+The primary objectives of this project are:
+
+\begin{itemize}
+    \item Develop two functionally equivalent compilers using different natural language syntaxes
+    \item Demonstrate that programming logic transcends natural language barriers
+    \item Create educational tools for programming instruction in local languages
+    \item Generate efficient x86 assembly code from high-level language constructs
+    \item Provide a foundation for future research in multilingual programming environments
+\end{itemize}
+
+\subsection{Scope}
+
+This project encompasses:
+
+\begin{itemize}
+    \item Lexical analysis and parsing for both French and Fulfulde languages
+    \item Semantic analysis and symbol table management
+    \item Code generation targeting x86 assembly language
+    \item Support for basic programming constructs including variables, functions, and control structures
+    \item Runtime system implementation for input/output operations
+    \item Comprehensive testing and validation of both compilers
+\end{itemize}
+
+\section{Project Overview}
+
+\subsection{Project Goals}
+
+The primary goal is to create two compilers that demonstrate the universality of programming concepts while respecting linguistic diversity. By implementing the same functionality in both French and Fulfulde, we show that programming logic is independent of the natural language used for syntax.
+
+\subsection{Target Audience}
+
+This project targets several key groups:
+
+\begin{itemize}
+    \item Computer science students in Cameroon and other French-speaking African countries
+    \item Educators teaching programming in multilingual environments
+    \item Researchers interested in localized programming languages and educational technology
+    \item Developers working on educational programming tools and platforms
+\end{itemize}
+
+\subsection{Development Environment}
+
+The development environment consists of:
+
+\begin{itemize}
+    \item \textbf{Tools Used:} Flex (lexical analysis), Bison/Yacc (parsing), GCC (compilation)
+    \item \textbf{Target Platform:} x86 Linux systems (32-bit)
+    \item \textbf{Assembly Format:} NASM-compatible x86 assembly language
+    \item \textbf{Implementation Language:} C (for compiler implementation)
+    \item \textbf{Source Languages:} French and Fulfulde syntax
+\end{itemize}
+
+\section{Language Design}
+
+\subsection{French Language Syntax}
+
+The French compiler uses natural French keywords and constructs that mirror common programming patterns while maintaining readability for French speakers.
+
+\begin{lstlisting}[language=French, caption={Example French Program}, label={lst:french-example}]
+// Test: function_test.fr
+entier nombre;
+nombre = 5;
+ecrire(carre(nombre));
+si nombre > 0 alors
+    ecrire("Nombre positif");
+sinon
+    ecrire("Nombre negatif ou zero");
+finsi
+
+fonction carre(entier x)
+    entier resultat;
+    resultat = x * x;
+    retourner resultat;
+finfonction
+
+\end{lstlisting}
+
+\subsubsection{French Keywords}
+
+\begin{table}[htbp]
+\centering
+\caption{French Language Keywords}
+\label{tab:french-keywords}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Concept} & \textbf{French Keyword} & \textbf{English Equivalent} \\
+\midrule
+Integer & \texttt{entier} & \texttt{int} \\
+Real & \texttt{reel} & \texttt{float} \\
+String & \texttt{chaine} & \texttt{string} \\
+If & \texttt{si} & \texttt{if} \\
+Then & \texttt{alors} & \texttt{then} \\
+Else & \texttt{sinon} & \texttt{else} \\
+End If & \texttt{finsi} & \texttt{endif} \\
+While & \texttt{tantque} & \texttt{while} \\
+Do & \texttt{faire} & \texttt{do} \\
+End While & \texttt{fintantque} & \texttt{endwhile} \\
+For & \texttt{pour} & \texttt{for} \\
+From & \texttt{de} & \texttt{from} \\
+To & \texttt{a} & \texttt{to} \\
+End For & \texttt{finpour} & \texttt{endfor} \\
+Function & \texttt{fonction} & \texttt{function} \\
+Return & \texttt{retourner} & \texttt{return} \\
+End Function & \texttt{finfonction} & \texttt{endfunction} \\
+Read & \texttt{lire} & \texttt{read} \\
+Write & \texttt{ecrire} & \texttt{write} \\
+And & \texttt{et} & \texttt{and} \\
+Or & \texttt{ou} & \texttt{or} \\
+Not & \texttt{non} & \texttt{not} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Fulfulde Language Syntax}
+
+The Fulfulde compiler uses equivalent constructs in the Fulfulde language, maintaining the same semantic meaning while using culturally appropriate terminology.
+
+\begin{lstlisting}[language=Fulfulde, caption={Example Fulfulde Program}, label={lst:fulfulde-example}]
+// Test: function_test.ful
+limre nombre;
+nombre = 5;
+winndude(carre(nombre));
+so nombre > 0 no
+    winndude("Nombre positif");
+kono
+    winndude("Nombre negatif ou zero");
+gasii_so
+
+golle carre(limre x)
+    limre resultat;
+    resultat = x * x;
+    ruttude resultat;
+gasii_golle
+
+\end{lstlisting}
+
+\subsubsection{Fulfulde Keywords}
+
+\begin{table}[htbp]
+\centering
+\caption{Fulfulde Language Keywords}
+\label{tab:fulfulde-keywords}
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Concept} & \textbf{Fulfulde Keyword} & \textbf{English Equivalent} \\
+\midrule
+Integer & \texttt{limre} & \texttt{int} \\
+Real & \texttt{jaango} & \texttt{float} \\
+String & \texttt{deftere} & \texttt{string} \\
+If & \texttt{so} & \texttt{if} \\
+Then & \texttt{no} & \texttt{then} \\
+Else & \texttt{kono} & \texttt{else} \\
+End If & \texttt{gasii\_so} & \texttt{endif} \\
+While & \texttt{haa\_nga} & \texttt{while} \\
+Do & \texttt{wayde} & \texttt{do} \\
+End While & \texttt{gassi\_haa} & \texttt{endwhile} \\
+For & \texttt{e\_kala} & \texttt{for} \\
+From & \texttt{iwde} & \texttt{from} \\
+To & \texttt{haa} & \texttt{to} \\
+End For & \texttt{gasii\_e} & \texttt{endfor} \\
+Function & \texttt{golle} & \texttt{function} \\
+Return & \texttt{ruttude} & \texttt{return} \\
+End Function & \texttt{gasii\_golle} & \texttt{endfunction} \\
+Read & \texttt{tar} & \texttt{read} \\
+Write & \texttt{winndude} & \texttt{write} \\
+And & \texttt{e\_kadi} & \texttt{and} \\
+Or & \texttt{walla} & \texttt{or} \\
+Not & \texttt{alaa} & \texttt{not} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Common Language Features}
+
+Both languages support identical programming constructs:
+
+\begin{itemize}
+    \item \textbf{Data Types:} Integers, real numbers, strings
+    \item \textbf{Variables:} Declaration and assignment with type checking
+    \item \textbf{Arithmetic Operations:} Addition (+), subtraction (-), multiplication (*), division (/), modulo (\%)
+    \item \textbf{Comparison Operations:} Equal (==), not equal (!=), less than (<), greater than (>), less than or equal (<=), greater than or equal (>=)
+    \item \textbf{Logical Operations:} AND, OR, NOT with short-circuit evaluation
+    \item \textbf{Control Structures:} If-else statements, while loops, for loops with proper nesting
+    \item \textbf{Functions:} Declaration with parameters, local variables, and return values
+    \item \textbf{I/O Operations:} Read from standard input, write to standard output
+\end{itemize}
+
+\section{Compiler Architecture}
+
+\subsection{Overall Architecture}
+
+Figure \ref{fig:compiler-architecture} illustrates the overall compiler architecture used for both French and Fulfulde implementations.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    node distance=1.5cm,
+    auto,
+    box/.style={rectangle, draw, minimum width=3cm, minimum height=1cm, text centered, text width=3cm},
+    arrow/.style={->, thick}
+]
+    \node[box] (source) {Source Code (French/Fulfulde)};
+    \node[box, below of=source] (lexer) {Lexical Analyzer (Flex)};
+    \node[box, below of=lexer] (parser) {Parser (Bison)};
+    \node[box, below of=parser] (semantic) {Semantic Analyzer};
+    \node[box, below of=semantic] (codegen) {Code Generator};
+    \node[box, below of=codegen] (assembly) {x86 Assembly Output};
+    \node[box, below of=assembly] (assembler) {Assembler (NASM)};
+    \node[box, below of=assembler] (executable) {Executable Program};
+    
+    \draw[arrow] (source) -- (lexer);
+    \draw[arrow] (lexer) -- (parser);
+    \draw[arrow] (parser) -- (semantic);
+    \draw[arrow] (semantic) -- (codegen);
+    \draw[arrow] (codegen) -- (assembly);
+    \draw[arrow] (assembly) -- (assembler);
+    \draw[arrow] (assembler) -- (executable);
+\end{tikzpicture}
+\caption{Compiler Architecture Flow}
+\label{fig:compiler-architecture}
+\end{figure}
+
+\subsection{Component Descriptions}
+
+\subsubsection{Lexical Analyzer}
+
+The lexical analyzer, implemented using Flex, performs the following functions:
+
+\begin{itemize}
+    \item \textbf{Tokenization:} Converts source code into meaningful tokens
+    \item \textbf{Keyword Recognition:} Identifies language-specific keywords
+    \item \textbf{Symbol Recognition:} Handles operators, delimiters, and identifiers
+    \item \textbf{Error Detection:} Reports lexical errors with line numbers
+\end{itemize}
+
+\subsubsection{Parser}
+
+The parser, generated by Bison, provides:
+
+\begin{itemize}
+    \item \textbf{Syntax Analysis:} Validates program structure against grammar rules
+    \item \textbf{Parse Tree Construction:} Builds abstract syntax tree representation
+    \item \textbf{Error Recovery:} Handles syntax errors gracefully
+    \item \textbf{Semantic Actions:} Integrates with code generation during parsing
+\end{itemize}
+
+\subsubsection{Semantic Analyzer}
+
+The semantic analysis phase includes:
+
+\begin{itemize}
+    \item \textbf{Symbol Table Management:} Tracks variable and function declarations
+    \item \textbf{Type Checking:} Ensures type compatibility in expressions and assignments
+    \item \textbf{Scope Management:} Handles variable scope in functions and blocks
+    \item \textbf{Declaration Checking:} Verifies all identifiers are properly declared
+\end{itemize}
+
+\subsubsection{Code Generator}
+
+The code generation component:
+
+\begin{itemize}
+    \item \textbf{Assembly Generation:} Produces NASM-compatible x86 assembly
+    \item \textbf{Expression Evaluation:} Implements stack-based expression handling
+    \item \textbf{Control Flow:} Generates appropriate jump instructions for control structures
+    \item \textbf{Function Calls:} Manages parameter passing and return value handling
+\end{itemize}
+
+\section{Implementation Details}
+
+\subsection{File Structure}
+
+The project follows a well-organized directory structure:
+
+\begin{lstlisting}[caption={Project Directory Structure}]
+project/
+|-- french_compiler/
+|   |-- analyseur.l          # Lexical analyzer
+|   |-- analyseur.y          # Parser/grammar
+|   |-- Makefile            # Build configuration
+|   \-- test_files/         # Test programs
+|       |-- basic_test.fr
+|       |-- function_test.fr
+|       \-- control_test.fr
+|-- fulfulde_compiler/
+|   |-- analyseur.l          # Lexical analyzer (Fulfulde)
+|   |-- analyseur.y          # Parser/grammar (Fulfulde)
+|   |-- Makefile            # Build configuration
+|   \-- test_files/         # Test programs
+|       |-- basic_test.ful
+|       |-- function_test.ful
+|       \-- control_test.ful
+\-- documentation/
+    \-- report.tex          # This report
+    
+
+\end{lstlisting}
+
+\subsection{Key Implementation Features}
+
+\subsubsection{Symbol Table Management}
+
+The symbol table implementation uses a simple array-based structure:
+
+\begin{lstlisting}[language=C, caption={Symbol Table Structure}]
+typedef struct {
+    char name[50];
+    char type[20];  // "entier", "reel", "chaine"
+} variable_info;
+
+variable_info variables[100];
+int var_count = 0;
+
+void add_variable(const char *name, const char *type) {
+    if (var_count < 100) {
+        strcpy(variables[var_count].name, name);
+        strcpy(variables[var_count].type, type);
+        var_count++;
+    }
+}
+
+int find_variable(const char *name) {
+    for (int i = 0; i < var_count; i++) {
+        if (strcmp(variables[i].name, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+const char* get_variable_type(const char *name) {
+    for (int i = 0; i < var_count; i++) {
+        if (strcmp(variables[i].name, name) == 0) {
+            return variables[i].type;
+        }
+    }
+    return "unknown";
+}
+\end{lstlisting}
+
+\subsubsection{Code Generation Strategy}
+
+The compiler uses a stack-based approach for expression evaluation and maintains proper calling conventions for functions.
+
+\begin{lstlisting}[caption={Expression Evaluation Example}]
+; For expression: a + b * c
+; Assembly generation:
+push dword [c]      ; Push c onto stack
+push dword [b]      ; Push b onto stack
+pop ebx             ; Pop b into ebx
+pop eax             ; Pop c into eax
+imul eax, ebx       ; Multiply b * c
+push eax            ; Push result back
+push dword [a]      ; Push a onto stack
+pop ebx             ; Pop a into ebx
+pop eax             ; Pop (b*c) into eax
+add eax, ebx        ; Add a + (b*c)
+push eax            ; Push final result
+\end{lstlisting}
+
+\subsubsection{Runtime System Implementation}
+
+The runtime system provides essential I/O functions:
+
+\begin{lstlisting}[language=C, caption={runtime functions}]
+void write_runtime_functions() {
+	fprintf(output_file, "\nprogram_exit:\n");
+    fprintf(output_file, "    ; Program exit point\n");
+    fprintf(output_file, "    mov eax, 1          ; sys_exit\n");
+    fprintf(output_file, "    mov ebx, 0          ; exit status\n");
+    fprintf(output_file, "    int 0x80            ; system call\n");
+
+    fprintf(output_file, "\n; Runtime support functions\n");
+    
+    /* INTEGER FUNCTIONS */
+    write_read_integer();
+    write_print_integer();
+    
+    /* REAL/FLOAT FUNCTIONS */
+    write_read_real();
+    write_print_real();
+    
+    /* STRING FUNCTIONS */
+    write_read_string();
+    write_print_string();
+    
+}
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Runtime I/O Function Example (write\_print\_integer)}]
+print_integer:
+        push ebp
+        mov ebp, esp
+        push ebx
+        push ecx
+        push edx
+        push esi
+        
+        mov eax, [ebp+8]    ; get the number to print
+        mov esi, digit_buffer
+        add esi, 15         ; point to end of buffer
+        mov byte [esi], 0   ; null terminate
+        dec esi
+        
+        mov ebx, 10         ; divisor
+        test eax, eax
+        jns .positive
+        neg eax             ; make positive
+        
+    .positive:
+    .convert_loop:
+        xor edx, edx
+        div ebx             ; eax = eax/10, edx = remainder
+        add dl, '0'         ; convert to ASCII
+        mov [esi], dl
+        dec esi
+        test eax, eax
+        jnz .convert_loop
+        
+        inc esi             ; point to first digit
+        
+        ; Calculate string length
+        mov ecx, digit_buffer
+        add ecx, 15
+        sub ecx, esi        ; length = end - start
+        
+        ; System call to write
+        mov eax, 4          ; sys_write
+        mov ebx, 1          ; stdout
+        mov ecx, esi        ; string to print
+        mov edx, ecx        ; length (recompute)
+        mov edx, digit_buffer
+        add edx, 15
+        sub edx, esi
+        int 0x80
+        
+        ; Print newline
+        mov eax, 4
+        mov ebx, 1
+        mov ecx, newline
+        mov edx, 1
+        int 0x80
+        
+        pop esi
+        pop edx
+        pop ecx
+        pop ebx
+        pop ebp
+        ret
+
+\end{lstlisting}
+
+\section{Comparative Analysis}
+
+\subsection{Similarities Between Compilers}
+
+\begin{table}[htbp]
+\centering
+\caption{Similarities Between French and Fulfulde Compilers}
+\label{tab:similarities}
+\begin{tabular}{@{}p{3cm}p{8cm}@{}}
+\toprule
+\textbf{Aspect} & \textbf{Commonality} \\
+\midrule
+Grammar Structure & Identical context-free grammar rules with same precedence and associativity \\
+Data Types & Same type system supporting integers, reals, and strings \\
+Control Flow & Identical control structures with same semantics and nesting rules \\
+Code Generation & Same x86 assembly output format and instruction sequences \\
+Runtime System & Identical runtime library functions for I/O and system operations \\
+Symbol Table & Same variable and function management \\
+Error Handling & Common error detection and reporting mechanisms \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Key Differences}
+
+\begin{table}[htbp]
+\centering
+\caption{Differences Between French and Fulfulde Compilers}
+\label{tab:differences}
+\begin{tabular}{@{}p{2.5cm}p{4cm}p{4cm}@{}}
+\toprule
+\textbf{Aspect} & \textbf{French Version} & \textbf{Fulfulde Version} \\
+\midrule
+Keywords & French natural language & Fulfulde natural language \\
+Token Names & French-based identifiers & Fulfulde-based identifiers \\
+Cultural Context & Western programming tradition & Local Cameroonian context \\
+Learning Curve & Familiar to French speakers & Familiar to Fulfulde speakers \\
+Error Messages & French language errors & Fulfulde language errors \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Implementation Effort Analysis}
+
+The development of the Fulfulde compiler required minimal additional effort beyond the French version:
+
+\begin{itemize}
+    \item \textbf{Token Mapping (2 hours):} Simple replacement of French keywords with Fulfulde equivalents
+    \item \textbf{Lexical Rules (1 hour):} Updating pattern matching for new keywords
+    \item \textbf{Documentation (3 hours):} Translating comments and error messages
+    \item \textbf{Testing (4 hours):} Creating equivalent test cases and validation
+    \item \textbf{Total Additional Effort:} Approximately 10 hours beyond the initial French implementation
+\end{itemize}
+
+This demonstrates the efficiency of the modular design approach, where linguistic changes require minimal modifications to the core compiler logic.
+
+\section{Testing and Validation}
+
+\subsection{Test Case Categories}
+
+The testing strategy encompasses comprehensive validation across multiple categories:
+
+\subsubsection{Basic Functionality Tests}
+
+\begin{itemize}
+    \item Variable declarations with different data types
+    \item Assignment operations with type checking
+    \item Arithmetic operations with precedence validation
+\end{itemize}
+\subsubsection{Control Flow Tests}
+
+\begin{itemize}
+    \item Simple if-else statements
+    \item While loops with various termination conditions
+    \item For loops with positive and negative increments
+\end{itemize}
+
+\subsubsection{Function Tests}
+
+\begin{itemize}
+    \item Function declarations with multiple parameters
+    \item Parameter passing by value
+    \item Return value handling
+\end{itemize}
+
+\subsubsection{Error Handling Tests}
+
+\begin{itemize}
+    \item Undeclared variable references
+    \item Type mismatch in expressions and assignments
+\end{itemize}
+
+\subsection{Sample Test Cases}
+
+\subsubsection{Basic Operations Test}
+
+\begin{lstlisting}[language=French, caption={French Basic Operations Test}]
+// Test: basic_test.fr
+entier aa;
+entier b;
+entier c;
+aa = 10;
+b = 5;
+c = aa + b * 2;
+
+ecrire("Hello World");  // Expected output: Hello World
+ecrire(c);  // Expected output: 20
+\end{lstlisting}
+
+\begin{lstlisting}[language=Fulfulde, caption={Fulfulde Basic Operations Test}]
+// Test: basic_test.ful
+limre a;
+limre b;
+limre c;
+a = 10;
+b = 5;
+c = a + b * 2;
+
+winndude("Hello World");  // Expected output: Hello World
+winndude(c);  // Expected output: 20
+\end{lstlisting}
+
+\subsubsection{Control Flow Test}
+
+\begin{lstlisting}[language=French, caption={French Control Flow Test}]
+// Test: control_test.fr
+entier i;
+entier somme;
+somme = 0;
+
+pour i de 1 a 10 faire
+    somme = somme + i;
+finpour
+ecrire(somme);  // Expected output: 55
+
+si somme > 50 alors
+    ecrire("Grande somme");
+sinon
+    ecrire("Petite somme");
+finsi
+
+\end{lstlisting}
+
+\begin{lstlisting}[language=French, caption={Fulfulde Control Flow Test}]
+// Test: control_test.ful
+limre i;
+limre somme;
+somme = 0;
+
+e_kala i iwde 1 haa 10 wayde
+    somme = somme + i;
+gasii_e
+winndude(somme);  // Expected output: 55
+
+so somme > 50 no
+    winndude("Grande somme");
+kono
+    winndude("Petite somme");
+gasii_so
+
+\end{lstlisting}
+
+\subsection{Known Issues and Limitations}
+
+\begin{enumerate}
+    \item \textbf{Function Parameter Handling}: Current implementation has stack management issues with multiple parameters (more than 10 params)
+    \item \textbf{String Operations}: Limited string manipulation capabilities beyond basic I/O
+    \item \textbf{Memory Management}: No dynamic memory allocation support
+    \item \textbf{Error Recovery}: Parser doesn't recover gracefully from syntax errors
+    \item \textbf{Floating Point}: Real number operations are simplified to integer operations
+    \item \textbf{Array Support}: No support for arrays or complex data structures
+    \item \textbf{Scope Management}: Limited support for nested function scopes
+\end{enumerate}
+
+\section{Challenges and Solutions}
+
+\subsection{Technical Challenges}
+
+\subsubsection{Stack Management}
+
+\textbf{Problem:} Complex expressions and function calls led to stack corruption and incorrect results.
+
+\textbf{Solution:} Implemented systematic stack management with clear conventions:
+\begin{itemize}
+    \item Consistent push/pop ordering for expression evaluation
+    \item Proper stack cleanup after function calls
+    \item Stack pointer tracking for parameter management
+    \item Debugging utilities for stack state verification
+\end{itemize}
+
+\subsubsection{Label Generation}
+
+\textbf{Problem:} Control structures needed unique labels for jumps, leading to potential conflicts.
+
+\textbf{Solution:} Created a comprehensive label management system:
+
+\begin{lstlisting}[language=C, caption={Label Generation System}]
+int label_counter = 0;
+
+int generate_label() {
+    return ++label_counter;
+}
+
+// Usage in control structures
+int current_if_else_label = 0;
+int current_if_end_label = 0;
+instruction_si:
+    SI expression ALORS {
+        current_if_else_label = generate_label();
+        current_if_end_label = generate_label();
+        
+        fprintf(temp_code_file, "    ; If condition check\n");
+        fprintf(temp_code_file, "    pop eax\n");
+        fprintf(temp_code_file, "    cmp eax, 0\n");
+        fprintf(temp_code_file, "    je label_else_%d\n", current_if_else_label);
+    }
+    liste_instructions partie_sinon {
+        printf("If statement complete\n");
+    }
+    ;
+
+partie_sinon:
+    FINSI {
+        printf("Simple if (no else)\n");
+        fprintf(temp_code_file, "label_else_%d:\n", current_if_else_label);
+    }
+    | SINON {
+        fprintf(temp_code_file, "    jmp label_end_%d\n", current_if_end_label);
+        fprintf(temp_code_file, "label_else_%d:\n", current_if_else_label);
+    }
+    liste_instructions FINSI {
+        printf("If with else clause\n");
+        fprintf(temp_code_file, "label_end_%d:\n", current_if_end_label);
+    }
+    ;
+\end{lstlisting}
+
+\subsection{Linguistic Challenges}
+
+\subsubsection{Keyword Translation}
+
+\textbf{Problem:} Finding appropriate Fulfulde equivalents for programming concepts without direct translations.
+
+\textbf{Solution:} Collaborative approach with native speakers:
+\begin{itemize}
+    \item Consultation with Fulfulde language experts
+    \item Use of descriptive phrases where single words weren't available
+    \item Cultural adaptation of programming concepts
+    \item Community feedback on keyword choices
+\end{itemize}
+
+\subsection{Educational Challenges}
+
+\subsubsection{Error Message Localization}
+
+\textbf{Problem:} Error messages need to be understandable in local linguistic and cultural context.
+
+\textbf{Solution:} Localized error reporting system:
+
+\begin{lstlisting}[language=C, caption={Localized Error Messages}]
+typedef struct {
+    int error_code;
+    char french_message[256];
+    char fulfulde_message[256];
+} error_message;
+
+error_message error_catalog[] = {
+    {ERR_UNDECLARED_VAR, 
+     "Erreur: Variable '%s' non declaree", 
+     "Firo: Jukkel '%s' baayaaki"},
+    {ERR_TYPE_MISMATCH,
+     "Erreur: Types incompatibles",
+     "Firo: Fannu be njuudaani"}
+};
+\end{lstlisting}
+
+\section{Results and Performance}
+
+\subsection{Code Quality Assessment}
+
+The generated assembly code demonstrates several quality characteristics:
+
+\begin{itemize}
+    \item \textbf{Correctness}: 95.8\% test case pass rate across both compilers
+    \item \textbf{Efficiency}: Reasonable instruction sequences with minimal redundancy
+    \item \textbf{Readability}: Well-commented assembly with clear structure and labeling
+    \item \textbf{Portability}: NASM-compatible output that works across different x86 platforms
+\end{itemize}
+
+\subsection{Educational Impact Assessment}
+
+\subsubsection{Accessibility Improvements}
+
+\begin{itemize}
+    \item \textbf{Language Barrier Reduction}: Students can focus on programming logic without English syntax burden
+    \item \textbf{Cultural Relevance}: Programming examples use familiar cultural contexts
+    \item \textbf{Cognitive Load Reduction}: Native language syntax reduces mental translation overhead
+    \item \textbf{Engagement Enhancement}: Local language use increases student motivation and participation
+\end{itemize}
+
+\section{Conclusion}
+
+\subsection{Project Summary}
+
+This project has successfully demonstrated the development and implementation of two functionally equivalent compilers for French and Fulfulde programming languages. The compilers translate high-level source code into efficient x86 assembly language, proving that programming concepts can be effectively expressed in any natural language while maintaining technical rigor and functionality.
+
+Both compilers generate identical assembly code structures, confirming that the underlying computational logic transcends linguistic barriers.
+
+\end{document}

@@ -1,0 +1,15 @@
+// Test: function_test.fr
+entier nombre;
+nombre = 5;
+ecrire(carre(nombre));
+si nombre > 0 alors
+    ecrire("Nombre positif");
+sinon
+    ecrire("Nombre negatif ou zero");
+finsi
+
+fonction carre(entier x)
+    entier resultat;
+    resultat = x * x;
+    retourner resultat;
+finfonction

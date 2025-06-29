@@ -1,0 +1,15 @@
+// Test: function_test.ful
+limre nombre;
+nombre = 5;
+winndude(carre(nombre));
+so nombre > 0 no
+    winndude("Nombre positif");
+kono
+    winndude("Nombre negatif ou zero");
+gasii_so
+
+golle carre(limre x)
+    limre resultat;
+    resultat = x * x;
+    ruttude resultat;
+gasii_golle
