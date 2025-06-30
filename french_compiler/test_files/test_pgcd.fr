@@ -1,0 +1,25 @@
+// Fichier: test_pgcd.fr
+
+// Initialiser les valeurs pour le calcul du PGCD
+entier var_a;
+entier var_b;
+var_a = 3;
+var_b = 5;
+
+// Appeler la fonction de la bibliothèque pour calculer le PGCD
+ecrire("le pgcd de est ");
+ecrire(calculer_pgcd(var_a, var_b));
+
+
+
+// Fichier: bibliotheque.fr
+fonction calculer_pgcd(entier var_a, entier var_b)
+    entier r;
+    tantque (var_b != 0) faire 
+        r = var_a % var_b;
+        var_a = var_b;
+        var_b = r;
+    fintantque
+    
+    retourner var_a;
+finfonction
