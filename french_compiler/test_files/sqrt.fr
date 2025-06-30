@@ -1,0 +1,23 @@
+// Déclarer d'abord la fonction racine_caree
+// Maintenant l'appel à cette fonction
+entier nombre;
+entier racine;
+nombre = 2;
+racine = racine_caree(nombre);
+ecrire(racine);  // Résultat attendu : 4 (approximativement)
+
+fonction racine_caree(entier n)
+    entier guess;
+    entier i;
+    entier resultat;
+
+    guess = n;
+    pour i de 0 a 9 faire
+        guess = (guess + (n / guess)) / 2;
+    finpour
+
+    resultat = guess;
+    retourner resultat;
+finfonction
+
+

@@ -1,0 +1,26 @@
+
+entier resultat;
+resultat = pgcd();
+
+fonction pgcd()
+    entier aa;
+    entier bb;
+    entier r;
+
+    // Valeurs à tester
+    aa = 36;
+    bb = 60;
+
+    // Boucle d'Euclide
+    tantque bb != 0 faire
+        r = aa % bb;
+        aa = bb;
+        bb = r;
+    fintantque
+
+    ecrire("Le PGCD est :");
+    ecrire(aa);
+
+    retourner aa;
+finfonction
+

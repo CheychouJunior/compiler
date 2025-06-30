@@ -1,0 +1,24 @@
+limre resultat;
+resultat = pgcd();
+
+golle pgcd()
+    limre aa;
+    limre bb;
+    limre r;
+
+    // Valeurs à tester
+    aa = 36;
+    bb = 60;
+
+    // Boucle d'Euclide
+    haa_nga bb != 0 wayde
+        r = aa % bb;
+        aa = bb;
+        bb = r;
+    gasii_haa
+
+    winndude("Le PGCD est :");
+    winndude(aa);
+
+    ruttude aa;
+gasii_golle

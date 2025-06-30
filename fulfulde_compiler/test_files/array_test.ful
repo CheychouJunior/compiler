@@ -1,0 +1,54 @@
+// Example program demonstrating array usage in the enhanced French language compiler
+
+// Declare an array of 5 integers
+beyngu[5] limre nombres;
+
+// Declare and initialize an array
+beyngu[3] limre scores = {10, 20, 30};
+
+// Regular variables
+limre i;
+limre somme;
+
+// Initialize array elements
+nombres[0] = 1;
+nombres[1] = 2;
+nombres[2] = 3;
+nombres[3] = 4;
+nombres[4] = 5;
+
+// Initialize sum
+somme = 0;
+
+e_kala i iwde 0 haa 2 wayde
+    winndude(scores[i]);
+gasii_e
+
+// Calculate sum using a for loop
+e_kala i iwde 0 haa 4 wayde
+    somme = somme + nombres[i];
+gasii_e
+
+// Display the result
+winndude("La somme des éléments du beyngu est: ");
+winndude(somme);
+
+// Read values into array
+winndude("Entrez 3 nouvelles valeurs:");
+e_kala i iwde 0 haa 2 wayde
+    winndude("valeur ");
+    winndude(i);
+    winndude(": ");
+    tar(scores[i]);
+gasii_e
+
+// Display the new values
+winndude("Nouvelles valeurs:");
+e_kala i iwde 0 haa 2 wayde
+    winndude("scores ");
+    winndude(i);
+    winndude(" = ");
+    winndude(scores[i]);
+gasii_e
+
+ruttude 0;

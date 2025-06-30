@@ -23,12 +23,7 @@ lex.yy.c: analyseur_lexical.l analyseur.tab.h
 
 # Test the compiler
 test: compilateur
-	@echo "=== Test du compilateur ==="
-	@echo "entier x = 5;" > test.fr
-	@echo "entier y = 3;" >> test.fr
-	@echo "entier z = x + y;" >> test.fr
-	@echo "ecrire(z);" >> test.fr
-	./compilateur < test.fr
+	./compilateur < test_files/array_test.ful
 	$(NASM) -f elf32 -o output.o output.asm
 	$(LD) -m elf_i386 -o program output.o
 	./program

@@ -17,6 +17,7 @@ extern YYSTYPE yylval;
 "jaango"        { printf("[LEX] Token: REEL\n"); return REEL; }
 "deftere"       { printf("[LEX] Token: CHAINE\n"); return CHAINE; }
 "goonga"        { printf("[LEX] Token: BOOLEEN\n"); return BOOLEEN; }
+"beyngu"       { printf("[LEX] Token: TABLEAU\n"); return TABLEAU; }
 
  /* Instructions d'E/S en fulfulde */
 "tar"           { printf("[LEX] Token: LIRE\n"); return LIRE; }
@@ -72,13 +73,17 @@ extern YYSTYPE yylval;
 "/"             { printf("[LEX] Token: DIVISE\n"); return DIVISE; }
 "%"             { printf("[LEX] Token: MODULO\n"); return MODULO; }
 
- /* Délimiteurs - GARDÉS IDENTIQUES */
+ /* Délimiteurs */
 "("             { printf("[LEX] Token: PAREN_OUV\n"); return PAREN_OUV; }
 ")"             { printf("[LEX] Token: PAREN_FERM\n"); return PAREN_FERM; }
 "{"             { printf("[LEX] Token: ACCOLADE_OUV\n"); return ACCOLADE_OUV; }
 "}"             { printf("[LEX] Token: ACCOLADE_FERM\n"); return ACCOLADE_FERM; }
+"["             { printf("[LEX] Token: CROCHET_OUV\n"); return CROCHET_OUV; }
+"]"             { printf("[LEX] Token: CROCHET_FERM\n"); return CROCHET_FERM; }
 ";"             { printf("[LEX] Token: POINT_VIRGULE\n"); return POINT_VIRGULE; }
 ","             { printf("[LEX] Token: VIRGULE\n"); return VIRGULE; }
+"?"             { printf("[LEX] Token: QUESTION\n"); return QUESTION; }
+":"             { printf("[LEX] Token: DEUX_POINTS\n"); return DEUX_POINTS; }
 
  /* Nombres - GARDÉS IDENTIQUES */
 [0-9]+                  { 

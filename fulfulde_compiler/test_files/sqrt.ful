@@ -1,0 +1,21 @@
+// Déclarer d'abord la fonction racine_caree
+// Maintenant l'appel à cette fonction
+limre nombre;
+limre racine;
+nombre = 16;
+racine = racine_caree(nombre);
+winndude(racine);  // Résultat attendu : 4 (approximativement)
+
+golle racine_caree(limre n)
+    limre guess;
+    limre i;
+    limre resultat;
+
+    guess = n;
+    e_kala i iwde 0 haa 9 wayde
+        guess = (guess + (n / guess)) / 2;
+    gasii_e
+
+    resultat = guess;
+    ruttude resultat;
+gasii_golle

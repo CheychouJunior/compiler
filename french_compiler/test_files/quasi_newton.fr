@@ -1,0 +1,44 @@
+
+// Appel de la fonction (en dehors de toute autre fonction)
+entier r;
+r = quasi_newton();
+ecrire(r);
+
+fonction quasi_newton()
+    entier x0;
+    entier x1;
+    entier x2;
+    entier f0;
+    entier f1;
+    entier i;
+
+    x0 = 1;
+    x1 = 3;
+
+    pour i de 0 a 4 faire
+        // Calcul de f(x0) = x0 * x0 - 9
+        f0 = x0 * x0 - 9;
+
+        // Calcul de f(x1) = x1 * x1 - 9
+        f1 = x1 * x1 - 9;
+
+        // Éviter division par 0
+        si (f1 - f0) == 0 alors
+            retourner x1;
+        finsi
+
+        // x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
+        x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
+
+        // Mise à jour des valeurs
+        x0 = x1;
+        x1 = x2;
+    finpour
+
+    ecrire("Racine approx:");
+    ecrire(x2);
+
+    retourner x2;
+finfonction
+
+

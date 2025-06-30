@@ -1,0 +1,41 @@
+// Appel de la fonction (en dehors de toute autre fonction)
+limre r;
+r = quasi_newton();
+winndude(r);
+
+golle quasi_newton()
+    limre x0;
+    limre x1;
+    limre x2;
+    limre f0;
+    limre f1;
+    limre i;
+
+    x0 = 1;
+    x1 = 3;
+
+    e_kala i iwde 0 haa 4 wayde
+        // Calcul de f(x0) = x0 * x0 - 9
+        f0 = x0 * x0 - 9;
+
+        // Calcul de f(x1) = x1 * x1 - 9
+        f1 = x1 * x1 - 9;
+
+        // Éviter division par 0
+        so (f1 - f0) == 0 no
+            ruttude x1;
+        gasii_so
+
+        // x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
+        x2 = x1 - f1 * (x1 - x0) / (f1 - f0);
+
+        // Mise à jour des valeurs
+        x0 = x1;
+        x1 = x2;
+    gasii_e
+
+    winndude("Racine approx:");
+    winndude(x2);
+
+    ruttude x2;
+gasii_golle

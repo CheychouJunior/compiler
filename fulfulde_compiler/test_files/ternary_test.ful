@@ -1,0 +1,8 @@
+// operation ternaire
+limre x;
+limre y;
+limre max;
+x = 10;
+y = 20;
+max = (x > y) ? x : y;  // max will be 20
+winndude(max);

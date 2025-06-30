@@ -1,4 +1,5 @@
 // Test: function_test.fr
+
 entier nombre;
 nombre = 5;
 ecrire(carre(nombre));
@@ -13,3 +14,6 @@ fonction carre(entier x)
     resultat = x * x;
     retourner resultat;
 finfonction
+
+
+

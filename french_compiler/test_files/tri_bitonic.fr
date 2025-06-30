@@ -1,0 +1,62 @@
+// Tri bitonique sans paramètre, tableau global
+
+tableau[8] entier tab = {10, 30, 11, 20, 4, 330, 21, 110};
+entier taille;
+entier direction;
+entier i;
+entier rep;
+
+tri_bitonique();
+
+ecrire("Tableau trié:");
+pour i de 0 a 7 faire
+    ecrire(tab[i]);
+finpour
+
+fonction tri_bitonique()
+    entier bas;
+    entier k;
+    entier i;
+    entier temp;
+
+    taille = 8;       // taille fixe
+    bas = 0;
+    direction = 1;    // tri croissant
+
+    si taille > 1 alors
+        k = taille / 2;
+
+        // Trier première moitié croissante
+        pour i de bas a bas + k - 1 faire
+            si tab[i] > tab[i + k] alors
+                temp = tab[i];
+                tab[i] = tab[i + k];
+                tab[i + k] = temp;
+            finsi
+        finpour
+
+        // Trier deuxième moitié décroissante
+        pour i de bas + k a bas + taille - 1 faire
+            si tab[i] < tab[i - k] alors
+                temp = tab[i];
+                tab[i] = tab[i - k];
+                tab[i - k] = temp;
+            finsi
+        finpour
+    finsi
+
+    // On répète un certain nombre de fois pour trier complètement (simple boucle)
+    pour rep de 1 a 3 faire
+        // Fusion des moitiés
+        pour i de bas a bas + taille - k - 1 faire
+            si (direction == 1 et tab[i] > tab[i + k]) ou (direction == 0 et tab[i] < tab[i + k]) alors
+                temp = tab[i];
+                tab[i] = tab[i + k];
+                tab[i + k] = temp;
+            finsi
+        finpour
+    finpour
+finfonction
+
+
+retourner 0;
