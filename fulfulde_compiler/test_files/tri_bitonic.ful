@@ -1,0 +1,69 @@
+beyngu[4] limre tab = {5,7,1,3};
+limre i;
+limre k;
+limre temp;
+limre rep;
+
+tri_bitonique();
+
+golle tri_bitonique()
+    k = 2; // moitié de 4
+
+    // 1ère répétition
+    e_kala i iwde 0 haa k - 1 wayde
+        so tab[i] > tab[i + k] no
+            temp = tab[i];
+            tab[i] = tab[i + k];
+            tab[i + k] = temp;
+        gasii_so
+    gasii_e
+
+    e_kala i iwde k haa 3 wayde
+        so tab[i] < tab[i - k] no
+            temp = tab[i];
+            tab[i] = tab[i - k];
+            tab[i - k] = temp;
+        gasii_so
+    gasii_e
+
+    // 2e répétition
+    e_kala i iwde 0 haa k - 1 wayde
+        so tab[i] > tab[i + k] no
+            temp = tab[i];
+            tab[i] = tab[i + k];
+            tab[i + k] = temp;
+        gasii_so
+    gasii_e
+
+    e_kala i iwde k haa 3 wayde
+        so tab[i] < tab[i - k] no
+            temp = tab[i];
+            tab[i] = tab[i - k];
+            tab[i - k] = temp;
+        gasii_so
+    gasii_e
+
+    // 3e répétition
+    e_kala i iwde 0 haa k - 1 wayde
+        so tab[i] > tab[i + k] no
+            temp = tab[i];
+            tab[i] = tab[i + k];
+            tab[i + k] = temp;
+        gasii_so
+    gasii_e
+
+    e_kala i iwde k haa 3 wayde
+        so tab[i] < tab[i - k] no
+            temp = tab[i];
+            tab[i] = tab[i - k];
+            tab[i - k] = temp;
+        gasii_so
+    gasii_e
+
+    winndude("Tableau trié:");
+    e_kala i iwde 0 haa 3 wayde
+        winndude(tab[i]);
+    gasii_e
+gasii_golle
+
+ruttude 0;

@@ -1,62 +1,73 @@
-// Tri bitonique sans paramètre, tableau global
-
-tableau[8] entier tab = {10, 30, 11, 20, 4, 330, 21, 110};
-entier taille;
-entier direction;
+tableau[4] entier tab = {5,7,1,3};
 entier i;
+entier k;
+entier temp;
 entier rep;
 
 tri_bitonique();
 
-ecrire("Tableau trié:");
-pour i de 0 a 7 faire
-    ecrire(tab[i]);
-finpour
-
 fonction tri_bitonique()
-    entier bas;
-    entier k;
-    entier i;
-    entier temp;
+    k = 2; // moitié de 4
 
-    taille = 8;       // taille fixe
-    bas = 0;
-    direction = 1;    // tri croissant
+    // répéter 3 fois manuellement (au lieu de boucle rep)
+    
+    // 1ère répétition
+    // Comparer et échanger première moitié croissante
+    pour i de 0 a k - 1 faire
+        si tab[i] > tab[i + k] alors
+            temp = tab[i];
+            tab[i] = tab[i + k];
+            tab[i + k] = temp;
+        finsi
+    finpour
 
-    si taille > 1 alors
-        k = taille / 2;
+    // Comparer et échanger deuxième moitié décroissante
+    pour i de k a 3 faire
+        si tab[i] < tab[i - k] alors
+            temp = tab[i];
+            tab[i] = tab[i - k];
+            tab[i - k] = temp;
+        finsi
+    finpour
 
-        // Trier première moitié croissante
-        pour i de bas a bas + k - 1 faire
-            si tab[i] > tab[i + k] alors
-                temp = tab[i];
-                tab[i] = tab[i + k];
-                tab[i + k] = temp;
-            finsi
-        finpour
+    // 2ème répétition
+    pour i de 0 a k - 1 faire
+        si tab[i] > tab[i + k] alors
+            temp = tab[i];
+            tab[i] = tab[i + k];
+            tab[i + k] = temp;
+        finsi
+    finpour
 
-        // Trier deuxième moitié décroissante
-        pour i de bas + k a bas + taille - 1 faire
-            si tab[i] < tab[i - k] alors
-                temp = tab[i];
-                tab[i] = tab[i - k];
-                tab[i - k] = temp;
-            finsi
-        finpour
-    finsi
+    pour i de k a 3 faire
+        si tab[i] < tab[i - k] alors
+            temp = tab[i];
+            tab[i] = tab[i - k];
+            tab[i - k] = temp;
+        finsi
+    finpour
 
-    // On répète un certain nombre de fois pour trier complètement (simple boucle)
-    pour rep de 1 a 3 faire
-        // Fusion des moitiés
-        pour i de bas a bas + taille - k - 1 faire
-            si (direction == 1 et tab[i] > tab[i + k]) ou (direction == 0 et tab[i] < tab[i + k]) alors
-                temp = tab[i];
-                tab[i] = tab[i + k];
-                tab[i + k] = temp;
-            finsi
-        finpour
+    // 3ème répétition
+    pour i de 0 a k - 1 faire
+        si tab[i] > tab[i + k] alors
+            temp = tab[i];
+            tab[i] = tab[i + k];
+            tab[i + k] = temp;
+        finsi
+    finpour
+
+    pour i de k a 3 faire
+        si tab[i] < tab[i - k] alors
+            temp = tab[i];
+            tab[i] = tab[i - k];
+            tab[i - k] = temp;
+        finsi
+    finpour
+
+    ecrire("Tableau trié:");
+    pour i de 0 a 3 faire
+        ecrire(tab[i]);
     finpour
 finfonction
-
 
 retourner 0;

@@ -5,46 +5,26 @@ section .data
     input_buffer times 16 db 0
     array_index_temp dd 0
     array_bounds_msg db 'Array index out of bounds', 10, 0
-    tab times 8 dd 0
-    taille dd 0
-    direction dd 0
+    tab times 4 dd 0
     i dd 0
-    rep dd 0
-    bas dd 0
     k dd 0
-    i dd 0
     temp dd 0
-    string_lit_1 db 'ableau trié', 0
+    rep dd 0
+    string_lit_25 db 'ableau trié', 0
 
 section .text
     global _start
 
 _start:
-    ; Load constant 10
-    push 10
-    ; Load constant 30
-    push 30
-    ; Load constant 11
-    push 11
-    ; Load constant 20
-    push 20
-    ; Load constant 4
-    push 4
-    ; Load constant 330
-    push 330
-    ; Load constant 21
-    push 21
-    ; Load constant 110
-    push 110
+    ; Load constant 5
+    push 5
+    ; Load constant 7
+    push 7
+    ; Load constant 1
+    push 1
+    ; Load constant 3
+    push 3
     ; Array tab initialization
-    pop eax
-    mov [tab + 28], eax
-    pop eax
-    mov [tab + 24], eax
-    pop eax
-    mov [tab + 20], eax
-    pop eax
-    mov [tab + 16], eax
     pop eax
     mov [tab + 12], eax
     pop eax
@@ -55,25 +35,1013 @@ _start:
     mov [tab + 0], eax
     ; Function call statement (no params): tri_bitonique
     call tri_bitonique
-    ; Write string literal
-    push string_lit_1
-    call print_string
-    add esp, 4
+
+    ; Jump over function definitions
+    jmp program_exit
+
+; === Function tri_bitonique ===
+tri_bitonique:
+    push ebp
+    mov ebp, esp
+    ; Load constant 2
+    push 2
+    ; Assignment to k
+    pop eax
+    mov [k], eax
     ; Load constant 0
     push 0
-    ; Load constant 7
-    push 7
+    ; Load variable k
+    push dword [k]
+    ; Load constant 1
+    push 1
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
     ; For loop initialization
     pop ebx          ; end value
     pop eax          ; start value
     mov [i], eax    ; initialize loop variable
     mov [for_end_value], ebx  ; store end value
-label_start_2:
+label_start_1:
     ; Check loop condition
     mov eax, [i]
     mov ebx, [for_end_value]
     cmp eax, ebx
-    jg label_end_3
+    jg label_end_2
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Greater than comparison
+    pop ebx
+    pop eax
+    cmp eax, ebx
+    setg al
+    movzx eax, al
+    push eax
+    ; If condition check
+    pop eax
+    cmp eax, 0
+    je label_else_3
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Assignment to temp
+    pop eax
+    mov [temp], eax
+    ; Load variable i
+    push dword [i]
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Load variable temp
+    push dword [temp]
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+label_else_3:
+    ; Increment and continue loop
+    inc dword [i]
+    jmp label_start_1
+label_end_2:
+    ; Load variable k
+    push dword [k]
+    ; Load constant 3
+    push 3
+    ; For loop initialization
+    pop ebx          ; end value
+    pop eax          ; start value
+    mov [i], eax    ; initialize loop variable
+    mov [for_end_value], ebx  ; store end value
+label_start_5:
+    ; Check loop condition
+    mov eax, [i]
+    mov ebx, [for_end_value]
+    cmp eax, ebx
+    jg label_end_6
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Less than comparison
+    pop ebx
+    pop eax
+    cmp eax, ebx
+    setl al
+    movzx eax, al
+    push eax
+    ; If condition check
+    pop eax
+    cmp eax, 0
+    je label_else_7
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Assignment to temp
+    pop eax
+    mov [temp], eax
+    ; Load variable i
+    push dword [i]
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Load variable temp
+    push dword [temp]
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+label_else_7:
+    ; Increment and continue loop
+    inc dword [i]
+    jmp label_start_5
+label_end_6:
+    ; Load constant 0
+    push 0
+    ; Load variable k
+    push dword [k]
+    ; Load constant 1
+    push 1
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; For loop initialization
+    pop ebx          ; end value
+    pop eax          ; start value
+    mov [i], eax    ; initialize loop variable
+    mov [for_end_value], ebx  ; store end value
+label_start_9:
+    ; Check loop condition
+    mov eax, [i]
+    mov ebx, [for_end_value]
+    cmp eax, ebx
+    jg label_end_10
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Greater than comparison
+    pop ebx
+    pop eax
+    cmp eax, ebx
+    setg al
+    movzx eax, al
+    push eax
+    ; If condition check
+    pop eax
+    cmp eax, 0
+    je label_else_11
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Assignment to temp
+    pop eax
+    mov [temp], eax
+    ; Load variable i
+    push dword [i]
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Load variable temp
+    push dword [temp]
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+label_else_11:
+    ; Increment and continue loop
+    inc dword [i]
+    jmp label_start_9
+label_end_10:
+    ; Load variable k
+    push dword [k]
+    ; Load constant 3
+    push 3
+    ; For loop initialization
+    pop ebx          ; end value
+    pop eax          ; start value
+    mov [i], eax    ; initialize loop variable
+    mov [for_end_value], ebx  ; store end value
+label_start_13:
+    ; Check loop condition
+    mov eax, [i]
+    mov ebx, [for_end_value]
+    cmp eax, ebx
+    jg label_end_14
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Less than comparison
+    pop ebx
+    pop eax
+    cmp eax, ebx
+    setl al
+    movzx eax, al
+    push eax
+    ; If condition check
+    pop eax
+    cmp eax, 0
+    je label_else_15
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Assignment to temp
+    pop eax
+    mov [temp], eax
+    ; Load variable i
+    push dword [i]
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Load variable temp
+    push dword [temp]
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+label_else_15:
+    ; Increment and continue loop
+    inc dword [i]
+    jmp label_start_13
+label_end_14:
+    ; Load constant 0
+    push 0
+    ; Load variable k
+    push dword [k]
+    ; Load constant 1
+    push 1
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; For loop initialization
+    pop ebx          ; end value
+    pop eax          ; start value
+    mov [i], eax    ; initialize loop variable
+    mov [for_end_value], ebx  ; store end value
+label_start_17:
+    ; Check loop condition
+    mov eax, [i]
+    mov ebx, [for_end_value]
+    cmp eax, ebx
+    jg label_end_18
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Greater than comparison
+    pop ebx
+    pop eax
+    cmp eax, ebx
+    setg al
+    movzx eax, al
+    push eax
+    ; If condition check
+    pop eax
+    cmp eax, 0
+    je label_else_19
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Assignment to temp
+    pop eax
+    mov [temp], eax
+    ; Load variable i
+    push dword [i]
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Addition
+    pop ebx
+    pop eax
+    add eax, ebx
+    push eax
+    ; Load variable temp
+    push dword [temp]
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+label_else_19:
+    ; Increment and continue loop
+    inc dword [i]
+    jmp label_start_17
+label_end_18:
+    ; Load variable k
+    push dword [k]
+    ; Load constant 3
+    push 3
+    ; For loop initialization
+    pop ebx          ; end value
+    pop eax          ; start value
+    mov [i], eax    ; initialize loop variable
+    mov [for_end_value], ebx  ; store end value
+label_start_21:
+    ; Check loop condition
+    mov eax, [i]
+    mov ebx, [for_end_value]
+    cmp eax, ebx
+    jg label_end_22
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Less than comparison
+    pop ebx
+    pop eax
+    cmp eax, ebx
+    setl al
+    movzx eax, al
+    push eax
+    ; If condition check
+    pop eax
+    cmp eax, 0
+    je label_else_23
+    ; Load variable i
+    push dword [i]
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Assignment to temp
+    pop eax
+    mov [temp], eax
+    ; Load variable i
+    push dword [i]
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Array access tab[index]
+    pop eax          ; index
+    
+    ; Bounds check
+    push eax         ; save index
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop eax          ; restore index
+    
+    ; Calculate address and load value
+    mov edx, eax     ; index
+    shl edx, 2       ; index * 4
+    mov eax, [tab + edx] ; load value
+    push eax         ; push value for expression
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+    ; Load variable i
+    push dword [i]
+    ; Load variable k
+    push dword [k]
+    ; Subtraction
+    pop ebx
+    pop eax
+    sub eax, ebx
+    push eax
+    ; Load variable temp
+    push dword [temp]
+    ; Array assignment tab[index] = value
+    pop eax          ; value
+    pop ebx          ; index
+    
+    ; Bounds check
+    push eax         ; save value
+    push ebx         ; save index
+    mov eax, ebx     ; index for bounds check
+    mov ebx, 4      ; array size
+    call check_array_bounds
+    pop ebx          ; restore index
+    pop eax          ; restore value
+    
+    ; Calculate address and store
+    mov edx, ebx     ; index
+    shl edx, 2       ; index * 4 (for 32-bit integers)
+    mov [tab + edx], eax ; store value at base + offset
+label_else_23:
+    ; Increment and continue loop
+    inc dword [i]
+    jmp label_start_21
+label_end_22:
+    ; Write string literal
+    push string_lit_25
+    call print_string
+    add esp, 4
+    ; Load constant 0
+    push 0
+    ; Load constant 3
+    push 3
+    ; For loop initialization
+    pop ebx          ; end value
+    pop eax          ; start value
+    mov [i], eax    ; initialize loop variable
+    mov [for_end_value], ebx  ; store end value
+label_start_26:
+    ; Check loop condition
+    mov eax, [i]
+    mov ebx, [for_end_value]
+    cmp eax, ebx
+    jg label_end_27
     ; Load variable i
     push dword [i]
     ; Write array element tab[index]
@@ -81,7 +1049,7 @@ label_start_2:
     
     ; Bounds check
     push eax         ; save index
-    mov ebx, 8      ; array size
+    mov ebx, 4      ; array size
     call check_array_bounds
     pop eax          ; restore index
     
@@ -93,726 +1061,8 @@ label_start_2:
     add esp, 4
     ; Increment and continue loop
     inc dword [i]
-    jmp label_start_2
-label_end_3:
-
-    ; Jump over function definitions
-    jmp program_exit
-
-; === Function tri_bitonique ===
-tri_bitonique:
-    push ebp
-    mov ebp, esp
-    ; Load constant 8
-    push 8
-    ; Assignment to taille
-    pop eax
-    mov [taille], eax
-    ; Load constant 0
-    push 0
-    ; Assignment to bas
-    pop eax
-    mov [bas], eax
-    ; Load constant 1
-    push 1
-    ; Assignment to direction
-    pop eax
-    mov [direction], eax
-    ; Load variable taille
-    push dword [taille]
-    ; Load constant 1
-    push 1
-    ; Greater than comparison
-    pop ebx
-    pop eax
-    cmp eax, ebx
-    setg al
-    movzx eax, al
-    push eax
-    ; If condition check
-    pop eax
-    cmp eax, 0
-    je label_else_4
-    ; Load variable taille
-    push dword [taille]
-    ; Load constant 2
-    push 2
-    ; Division
-    pop ebx
-    pop eax
-    ; Check for division by zero
-    cmp ebx, 0
-    je div_by_zero_6
-    cdq
-    idiv ebx
-    jmp div_end_7
-div_by_zero_6:
-    mov eax, 0          ; result = 0 for division by zero
-div_end_7:
-    push eax
-    ; Assignment to k
-    pop eax
-    mov [k], eax
-    ; Load variable bas
-    push dword [bas]
-    ; Load variable bas
-    push dword [bas]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Load constant 1
-    push 1
-    ; Subtraction
-    pop ebx
-    pop eax
-    sub eax, ebx
-    push eax
-    ; For loop initialization
-    pop ebx          ; end value
-    pop eax          ; start value
-    mov [i], eax    ; initialize loop variable
-    mov [for_end_value], ebx  ; store end value
-label_start_8:
-    ; Check loop condition
-    mov eax, [i]
-    mov ebx, [for_end_value]
-    cmp eax, ebx
-    jg label_end_9
-    ; Load variable i
-    push dword [i]
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Greater than comparison
-    pop ebx
-    pop eax
-    cmp eax, ebx
-    setg al
-    movzx eax, al
-    push eax
-    ; If condition check
-    pop eax
-    cmp eax, 0
-    je label_else_10
-    ; Load variable i
-    push dword [i]
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Assignment to temp
-    pop eax
-    mov [temp], eax
-    ; Load variable i
-    push dword [i]
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Array assignment tab[index] = value
-    pop eax          ; value
-    pop ebx          ; index
-    
-    ; Bounds check
-    push eax         ; save value
-    push ebx         ; save index
-    mov eax, ebx     ; index for bounds check
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop ebx          ; restore index
-    pop eax          ; restore value
-    
-    ; Calculate address and store
-    mov edx, ebx     ; index
-    shl edx, 2       ; index * 4 (for 32-bit integers)
-    mov [tab + edx], eax ; store value at base + offset
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Load variable temp
-    push dword [temp]
-    ; Array assignment tab[index] = value
-    pop eax          ; value
-    pop ebx          ; index
-    
-    ; Bounds check
-    push eax         ; save value
-    push ebx         ; save index
-    mov eax, ebx     ; index for bounds check
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop ebx          ; restore index
-    pop eax          ; restore value
-    
-    ; Calculate address and store
-    mov edx, ebx     ; index
-    shl edx, 2       ; index * 4 (for 32-bit integers)
-    mov [tab + edx], eax ; store value at base + offset
-label_else_10:
-    ; Increment and continue loop
-    inc dword [i]
-    jmp label_start_8
-label_end_9:
-    ; Load variable bas
-    push dword [bas]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Load variable bas
-    push dword [bas]
-    ; Load variable taille
-    push dword [taille]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Load constant 1
-    push 1
-    ; Subtraction
-    pop ebx
-    pop eax
-    sub eax, ebx
-    push eax
-    ; For loop initialization
-    pop ebx          ; end value
-    pop eax          ; start value
-    mov [i], eax    ; initialize loop variable
-    mov [for_end_value], ebx  ; store end value
-label_start_12:
-    ; Check loop condition
-    mov eax, [i]
-    mov ebx, [for_end_value]
-    cmp eax, ebx
-    jg label_end_13
-    ; Load variable i
-    push dword [i]
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Subtraction
-    pop ebx
-    pop eax
-    sub eax, ebx
-    push eax
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Less than comparison
-    pop ebx
-    pop eax
-    cmp eax, ebx
-    setl al
-    movzx eax, al
-    push eax
-    ; If condition check
-    pop eax
-    cmp eax, 0
-    je label_else_14
-    ; Load variable i
-    push dword [i]
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Assignment to temp
-    pop eax
-    mov [temp], eax
-    ; Load variable i
-    push dword [i]
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Subtraction
-    pop ebx
-    pop eax
-    sub eax, ebx
-    push eax
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Array assignment tab[index] = value
-    pop eax          ; value
-    pop ebx          ; index
-    
-    ; Bounds check
-    push eax         ; save value
-    push ebx         ; save index
-    mov eax, ebx     ; index for bounds check
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop ebx          ; restore index
-    pop eax          ; restore value
-    
-    ; Calculate address and store
-    mov edx, ebx     ; index
-    shl edx, 2       ; index * 4 (for 32-bit integers)
-    mov [tab + edx], eax ; store value at base + offset
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Subtraction
-    pop ebx
-    pop eax
-    sub eax, ebx
-    push eax
-    ; Load variable temp
-    push dword [temp]
-    ; Array assignment tab[index] = value
-    pop eax          ; value
-    pop ebx          ; index
-    
-    ; Bounds check
-    push eax         ; save value
-    push ebx         ; save index
-    mov eax, ebx     ; index for bounds check
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop ebx          ; restore index
-    pop eax          ; restore value
-    
-    ; Calculate address and store
-    mov edx, ebx     ; index
-    shl edx, 2       ; index * 4 (for 32-bit integers)
-    mov [tab + edx], eax ; store value at base + offset
-label_else_14:
-    ; Increment and continue loop
-    inc dword [i]
-    jmp label_start_12
-label_end_13:
-label_else_14:
-    ; Load constant 1
-    push 1
-    ; Load constant 3
-    push 3
-    ; For loop initialization
-    pop ebx          ; end value
-    pop eax          ; start value
-    mov [rep], eax    ; initialize loop variable
-    mov [for_end_value], ebx  ; store end value
-label_start_16:
-    ; Check loop condition
-    mov eax, [rep]
-    mov ebx, [for_end_value]
-    cmp eax, ebx
-    jg label_end_17
-    ; Load variable bas
-    push dword [bas]
-    ; Load variable bas
-    push dword [bas]
-    ; Load variable taille
-    push dword [taille]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Load variable k
-    push dword [k]
-    ; Subtraction
-    pop ebx
-    pop eax
-    sub eax, ebx
-    push eax
-    ; Load constant 1
-    push 1
-    ; Subtraction
-    pop ebx
-    pop eax
-    sub eax, ebx
-    push eax
-    ; For loop initialization
-    pop ebx          ; end value
-    pop eax          ; start value
-    mov [i], eax    ; initialize loop variable
-    mov [for_end_value], ebx  ; store end value
-label_start_18:
-    ; Check loop condition
-    mov eax, [i]
-    mov ebx, [for_end_value]
-    cmp eax, ebx
-    jg label_end_19
-    ; Load variable direction
-    push dword [direction]
-    ; Load constant 1
-    push 1
-    ; Equality comparison
-    pop ebx
-    pop eax
-    cmp eax, ebx
-    sete al
-    movzx eax, al
-    push eax
-    ; Load variable i
-    push dword [i]
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Greater than comparison
-    pop ebx
-    pop eax
-    cmp eax, ebx
-    setg al
-    movzx eax, al
-    push eax
-    ; Logical AND
-    pop ebx
-    pop eax
-    test eax, eax
-    jz and_false_20
-    test ebx, ebx
-    jz and_false_20
-    mov eax, 1
-    jmp and_end_21
-and_false_20:
-    mov eax, 0
-and_end_21:
-    push eax
-    ; Load variable direction
-    push dword [direction]
-    ; Load constant 0
-    push 0
-    ; Equality comparison
-    pop ebx
-    pop eax
-    cmp eax, ebx
-    sete al
-    movzx eax, al
-    push eax
-    ; Load variable i
-    push dword [i]
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Less than comparison
-    pop ebx
-    pop eax
-    cmp eax, ebx
-    setl al
-    movzx eax, al
-    push eax
-    ; Logical AND
-    pop ebx
-    pop eax
-    test eax, eax
-    jz and_false_22
-    test ebx, ebx
-    jz and_false_22
-    mov eax, 1
-    jmp and_end_23
-and_false_22:
-    mov eax, 0
-and_end_23:
-    push eax
-    ; Logical OR
-    pop ebx
-    pop eax
-    test eax, eax
-    jnz or_true_24
-    test ebx, ebx
-    jnz or_true_24
-    mov eax, 0
-    jmp or_end_25
-or_true_24:
-    mov eax, 1
-or_end_25:
-    push eax
-    ; If condition check
-    pop eax
-    cmp eax, 0
-    je label_else_26
-    ; Load variable i
-    push dword [i]
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Assignment to temp
-    pop eax
-    mov [temp], eax
-    ; Load variable i
-    push dword [i]
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Array access tab[index]
-    pop eax          ; index
-    
-    ; Bounds check
-    push eax         ; save index
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop eax          ; restore index
-    
-    ; Calculate address and load value
-    mov edx, eax     ; index
-    shl edx, 2       ; index * 4
-    mov eax, [tab + edx] ; load value
-    push eax         ; push value for expression
-    ; Array assignment tab[index] = value
-    pop eax          ; value
-    pop ebx          ; index
-    
-    ; Bounds check
-    push eax         ; save value
-    push ebx         ; save index
-    mov eax, ebx     ; index for bounds check
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop ebx          ; restore index
-    pop eax          ; restore value
-    
-    ; Calculate address and store
-    mov edx, ebx     ; index
-    shl edx, 2       ; index * 4 (for 32-bit integers)
-    mov [tab + edx], eax ; store value at base + offset
-    ; Load variable i
-    push dword [i]
-    ; Load variable k
-    push dword [k]
-    ; Addition
-    pop ebx
-    pop eax
-    add eax, ebx
-    push eax
-    ; Load variable temp
-    push dword [temp]
-    ; Array assignment tab[index] = value
-    pop eax          ; value
-    pop ebx          ; index
-    
-    ; Bounds check
-    push eax         ; save value
-    push ebx         ; save index
-    mov eax, ebx     ; index for bounds check
-    mov ebx, 8      ; array size
-    call check_array_bounds
-    pop ebx          ; restore index
-    pop eax          ; restore value
-    
-    ; Calculate address and store
-    mov edx, ebx     ; index
-    shl edx, 2       ; index * 4 (for 32-bit integers)
-    mov [tab + edx], eax ; store value at base + offset
-label_else_26:
-    ; Increment and continue loop
-    inc dword [i]
-    jmp label_start_18
-label_end_19:
-    ; Increment and continue loop
-    inc dword [i]
-    jmp label_start_18
-label_end_19:
+    jmp label_start_26
+label_end_27:
     ; Automatic return
     mov eax, 0
     pop ebp

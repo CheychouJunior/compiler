@@ -23,7 +23,7 @@ lex.yy.c: analyseur_lexical.l analyseur.tab.h
 
 # Test the compiler
 test: compilateur
-	./compilateur < test_files/array_test.ful
+	./compilateur < test_files/tri_bitonic.ful
 	$(NASM) -f elf32 -o output.o output.asm
 	$(LD) -m elf_i386 -o program output.o
 	./program
