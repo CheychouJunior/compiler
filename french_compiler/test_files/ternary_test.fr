@@ -1,0 +1,8 @@
+//operation ternaire
+entier x;
+entier y;
+entier max;
+x = 10;
+y = 20;
+max = (x > y) ? x : y;  // max will be 20
+ecrire(max);

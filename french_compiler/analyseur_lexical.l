@@ -55,7 +55,7 @@ extern YYSTYPE yylval;
 "ou"            { printf("[LEX] Token: OU\n"); return OU; }
 "non"           { printf("[LEX] Token: NON\n"); return NON; }
 
- /* Opérateurs de comparaison */
+ /* Opérateurs de comparaison - ordre important */
 "=="            { printf("[LEX] Token: EGAL\n"); return EGAL; }
 "!="            { printf("[LEX] Token: DIFFERENT\n"); return DIFFERENT; }
 "<="            { printf("[LEX] Token: INFEGAL\n"); return INFEGAL; }
@@ -66,7 +66,9 @@ extern YYSTYPE yylval;
  /* Opérateur d'affectation */
 "="             { printf("[LEX] Token: AFFECTATION\n"); return AFFECTATION; }
 
- /* Opérateurs arithmétiques */
+ /* Opérateurs arithmétiques - ordre important pour ++ et -- */
+"++"            { printf("[LEX] Token: INCREMENT\n"); return INCREMENT; }
+"--"            { printf("[LEX] Token: DECREMENT\n"); return DECREMENT; }
 "+"             { printf("[LEX] Token: PLUS\n"); return PLUS; }
 "-"             { printf("[LEX] Token: MOINS\n"); return MOINS; }
 "*"             { printf("[LEX] Token: FOIS\n"); return FOIS; }
@@ -82,6 +84,8 @@ extern YYSTYPE yylval;
 "]"             { printf("[LEX] Token: CROCHET_FERM\n"); return CROCHET_FERM; }
 ";"             { printf("[LEX] Token: POINT_VIRGULE\n"); return POINT_VIRGULE; }
 ","             { printf("[LEX] Token: VIRGULE\n"); return VIRGULE; }
+"?"             { printf("[LEX] Token: QUESTION\n"); return QUESTION; }
+":"             { printf("[LEX] Token: DEUX_POINTS\n"); return DEUX_POINTS; }
 
  /* Nombres - IMPORTANT: AVANT les identificateurs */
 [0-9]+                  { 
@@ -96,10 +100,14 @@ extern YYSTYPE yylval;
     return NOMBRE_REEL; 
 }
 
- /* Chaînes de caractères */
-\"([^"\\]|\\.)*\"      { 
+ /* Chaînes de caractères - regex améliorée */
+\"([^"\\]|\\[\\"])*\"  { 
     printf("[LEX] Chaîne: %s\n", yytext); 
-    yylval.chaine = strdup(yytext); 
+    /* Enlever les guillemets pour la valeur stockée */
+    char* str = malloc(strlen(yytext) - 1);
+    strncpy(str, yytext + 1, strlen(yytext) - 2);
+    str[strlen(yytext) - 2] = '\0';
+    yylval.chaine = str;
     return CHAINE_LITT; 
 }
 
@@ -110,18 +118,19 @@ extern YYSTYPE yylval;
     return IDENTIFICATEUR; 
 }
 
- /* Commentaires */
-"//".*$         { printf("[LEX] Commentaire ignoré\n"); }
+ /* Commentaires - amélioration pour // */
+"//"[^\n]*             { printf("[LEX] Commentaire ligne ignoré\n"); }
 "/*"([^*]|\*+[^*/])*\*+"/"  { printf("[LEX] Commentaire bloc ignoré\n"); }
 
  /* Espaces et retours à la ligne */
 [ \t]+          { /* ignorer les espaces et tabulations */ }
 \n              { printf("[LEX] Nouvelle ligne %d\n", yylineno); }
 
- /* Caractères non reconnus */
+ /* Caractères non reconnus - NE PAS renvoyer le caractère */
 .               { 
-    printf("[LEX] ERREUR: Caractère non reconnu '%s' à la ligne %d\n", yytext, yylineno); 
-    return yytext[0]; 
+    printf("[LEX] ERREUR: Caractère non reconnu '%c' (ASCII %d) à la ligne %d\n", 
+           yytext[0], (int)yytext[0], yylineno); 
+    /* Ne pas retourner le caractère - continuer l'analyse */
 }
 
 %%

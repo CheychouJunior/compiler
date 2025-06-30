@@ -540,18 +540,24 @@ int find_function(const char *name) {
 %token PAREN_OUV PAREN_FERM ACCOLADE_OUV ACCOLADE_FERM
 %token CROCHET_OUV CROCHET_FERM
 %token POINT_VIRGULE VIRGULE
+%token QUESTION DEUX_POINTS
+%token INCREMENT
+%token DECREMENT
 
 %type <entier> expression
 %type <chaine> type
 
 %left OU
 %left ET
+%left INCREMENT DECREMENT
 %left EGAL DIFFERENT
 %left INFERIEUR SUPERIEUR INFEGAL SUPEGAL
 %left PLUS MOINS
 %left FOIS DIVISE MODULO
 %right NON
 %right MOINS_UNAIRE
+%right QUESTION DEUX_POINTS
+
 
 %%
 
@@ -1380,26 +1386,78 @@ expression:
         $$ = 0;
         free($1);
     } else {
-        fprintf(temp_code_file, "    ; Array access %s[index]\n", $1);
-        fprintf(temp_code_file, "    pop eax          ; index\n");
-        fprintf(temp_code_file, "    \n");
-        fprintf(temp_code_file, "    ; Bounds check\n");
-        fprintf(temp_code_file, "    push eax         ; save index\n");
-        fprintf(temp_code_file, "    mov ebx, %d      ; array size\n", get_array_size($1));
-        fprintf(temp_code_file, "    call check_array_bounds\n");
-        fprintf(temp_code_file, "    pop eax          ; restore index\n");
-        fprintf(temp_code_file, "    \n");
-        fprintf(temp_code_file, "    ; Calculate address and load value\n");
-        fprintf(temp_code_file, "    mov edx, eax     ; index\n");
-        fprintf(temp_code_file, "    shl edx, 2       ; index * 4\n");
-        fprintf(temp_code_file, "    mov eax, [%s + edx] ; load value\n", $1);
-        fprintf(temp_code_file, "    push eax         ; push value for expression\n");
-        
-        $$ = 0;
-        free($1);
+            fprintf(temp_code_file, "    ; Array access %s[index]\n", $1);
+            fprintf(temp_code_file, "    pop eax          ; index\n");
+            fprintf(temp_code_file, "    \n");
+            fprintf(temp_code_file, "    ; Bounds check\n");
+            fprintf(temp_code_file, "    push eax         ; save index\n");
+            fprintf(temp_code_file, "    mov ebx, %d      ; array size\n", get_array_size($1));
+            fprintf(temp_code_file, "    call check_array_bounds\n");
+            fprintf(temp_code_file, "    pop eax          ; restore index\n");
+            fprintf(temp_code_file, "    \n");
+            fprintf(temp_code_file, "    ; Calculate address and load value\n");
+            fprintf(temp_code_file, "    mov edx, eax     ; index\n");
+            fprintf(temp_code_file, "    shl edx, 2       ; index * 4\n");
+            fprintf(temp_code_file, "    mov eax, [%s + edx] ; load value\n", $1);
+            fprintf(temp_code_file, "    push eax         ; push value for expression\n");
+            
+            $$ = 0;
+            free($1);
+        }
     }
-}
-    ;
+    | expression QUESTION expression DEUX_POINTS expression {
+        printf("Expression ternaire: condition ? valeur_si_vrai : valeur_si_faux\n");
+        
+        // Generate unique labels for ternary operation
+        int false_label = generate_label();
+        int end_label = generate_label();
+        
+        fprintf(temp_code_file, "    ; Ternary operation: condition ? true_value : false_value\n");
+        
+        // Pop the false value (third expression)
+        fprintf(temp_code_file, "    pop ecx          ; false value\n");
+        // Pop the true value (second expression) 
+        fprintf(temp_code_file, "    pop ebx          ; true value\n");
+        // Pop the condition (first expression)
+        fprintf(temp_code_file, "    pop eax          ; condition\n");
+        
+        // Test condition
+        fprintf(temp_code_file, "    cmp eax, 0\n");
+        fprintf(temp_code_file, "    je ternary_false_%d\n", false_label);
+        
+        // Condition is true - use true value
+        fprintf(temp_code_file, "    push ebx         ; push true value\n");
+        fprintf(temp_code_file, "    jmp ternary_end_%d\n", end_label);
+        
+        // Condition is false - use false value
+        fprintf(temp_code_file, "ternary_false_%d:\n", false_label);
+        fprintf(temp_code_file, "    push ecx         ; push false value\n");
+        
+        fprintf(temp_code_file, "ternary_end_%d:\n", end_label);
+        
+        $$ = 0; // The result will be on the stack
+    }
+    | expression INCREMENT {
+        printf("Incrémentation: %d++\n", $1);
+        
+        fprintf(temp_code_file, "    ; Increment\n");
+        fprintf(temp_code_file, "    pop eax          ; value\n");
+        fprintf(temp_code_file, "    inc eax          ; increment\n");
+        fprintf(temp_code_file, "    push eax         ; push result\n");
+        
+        $$ = $1 + 1;
+    }
+    | expression DECREMENT {
+        printf("Décrémentation: %d--\n", $1);
+        
+        fprintf(temp_code_file, "    ; Decrement\n");
+        fprintf(temp_code_file, "    pop eax          ; value\n");
+        fprintf(temp_code_file, "    dec eax          ; decrement\n");
+        fprintf(temp_code_file, "    push eax         ; push result\n");
+        
+        $$ = $1 - 1;
+    }
+;
 
 appel_fonction:
     IDENTIFICATEUR PAREN_OUV liste_expressions PAREN_FERM {
