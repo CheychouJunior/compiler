@@ -46,6 +46,7 @@ extern YYSTYPE yylval;
 "retourner"     { printf("[LEX] Token: RETOURNER\n"); return RETOURNER; }
 "finfonction"   { printf("[LEX] Token: FINFONCTION\n"); return FINFONCTION; }
 
+
  /* Valeurs booléennes */
 "vrai"          { printf("[LEX] Token: VRAI\n"); return VRAI; }
 "faux"          { printf("[LEX] Token: FAUX\n"); return FAUX; }

@@ -1,0 +1,23 @@
+
+
+// Initialiser les valeurs pour le calcul du PGCD
+limre var_a;
+limre var_b;
+var_a = 3;
+var_b = 5;
+
+// Appeler la fonction de la bibliothèque pour calculer le PGCD
+winndude("le pgcd de est ");
+winndude(calculer_pgcd(var_a, var_b));
+
+golle calculer_pgcd(limre var_a, limre var_b)
+    limre r;
+    haa_nga (var_b != 0) wayde 
+        r = var_a % var_b;
+        var_a = var_b;
+        var_b = r;
+    gasii_haa
+    
+    
+    ruttude var_a;
+gasii_golle
